@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "our-app",
-    "slug": "our-app",
+    "name": "Gandhidham Interior Design Directory",
+    "slug": "gandhidham-interior-design-directory",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
