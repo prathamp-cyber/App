@@ -1,10 +1,10 @@
 ========================================================================
-EXAMINER GUIDE: G-INTERIOR MOBILE APP
+EXAMINER GUIDE: DWELLIST MOBILE APP
 ========================================================================
 Project Structure, Code Explanations, and Key Concepts
 
 This document is a comprehensive, beginner-friendly guide written in plain language.
-It explains exactly how every file, feature, and component in the G-Interior App works,
+It explains exactly how every file, feature, and component in the Dwellist App works,
 why it was implemented that way, and how it performs efficiently. Use this to confidently
 answer any question your project examiner asks!
 
