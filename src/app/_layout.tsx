@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Tabs } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -5,6 +6,7 @@ import { useColorScheme, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
+import { IntroOverlay } from '@/components/intro-overlay';
 import { AppProvider } from '@/context/AppContext';
 import { useTheme } from '@/hooks/use-theme';
 
@@ -13,11 +15,13 @@ SplashScreen.preventAutoHideAsync();
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const theme = useTheme();
+  const [introVisible, setIntroVisible] = useState(true);
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <AppProvider>
         <AnimatedSplashOverlay />
+        <IntroOverlay visible={introVisible} onClose={() => setIntroVisible(false)} />
         <Tabs
           screenOptions={{
             headerShown: false,

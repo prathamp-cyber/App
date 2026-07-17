@@ -101,7 +101,7 @@ export default function ExploreScreen() {
             </Pressable>
           </View>
           <View style={[styles.logoBadge, { backgroundColor: theme.accentGreenLight }]}>
-            <ThemedText type="smallBold" style={{ color: green }}>G-Interior</ThemedText>
+            <ThemedText type="smallBold" style={{ color: green }}>Dwellist</ThemedText>
           </View>
         </View>
 

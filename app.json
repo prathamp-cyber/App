@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Gandhidham Interior Design Directory",
-    "slug": "gandhidham-interior-design-directory",
+    "name": "Dwellist",
+    "slug": "dwellist",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",

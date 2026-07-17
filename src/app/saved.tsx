@@ -45,7 +45,7 @@ export default function SavedScreen() {
             Saved Studios
           </ThemedText>
           <ThemedText style={styles.headerSubtitle} themeColor="textSecondary">
-            Your favorite interior designers in Gandhidham
+            Your curated list of favorite design studios
           </ThemedText>
         </View>
 
