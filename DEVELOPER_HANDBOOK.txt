@@ -1,0 +1,68 @@
+================================================================
+📘 DWELLIST CODEBASE EXPLAINER & DEVELOPER HANDBOOK
+================================================================
+
+This document explains the Dwellist app codebase from scratch, covering basic concepts, structure, and complex UI layouts.
+
+----------------------------------------------------------------
+🗺️ 1. DIRECTORY STRUCTURE & MAP
+----------------------------------------------------------------
+Dwellist is a React Native Expo app utilizing Expo Router (file-system navigation).
+
+* src/app/             -> Screen components (Navigation targets)
+  - _layout.tsx        -> Root app setup, theme provider, tab bar shell.
+  - index.tsx          -> Explore tab (Search, area chips, top choices).
+  - saved.tsx          -> Bookmarked studios list.
+  - compare.tsx        -> Studio comparison table (Up to 3 studios).
+* src/components/      -> Reusable UI buttons, cards, modal overlays.
+* src/constants/       -> Mock data records (mockData.ts) and colors (theme.ts).
+* src/context/         -> Global states (AppContext.tsx).
+* src/hooks/           -> use-theme.ts, use-color-scheme.ts.
+
+----------------------------------------------------------------
+⚡ 2. APP STATE ENGINE (AppContext.tsx)
+----------------------------------------------------------------
+Managed globally via the React Context API. The key features include:
+1. Bookmarked List: Keeps track of saved studio IDs.
+2. Comparison List: Keeps track of compared studio IDs. Limits comparison to 3 studios at a time using this validation logic:
+   -------------------------------------------------------------
+   if (prev.length >= 3) {
+     alert("You can compare up to 3 designers at a time.");
+     return prev;
+   }
+   -------------------------------------------------------------
+3. City Selection: Toggle feed between "Gandhidham" and "Ahmedabad".
+
+----------------------------------------------------------------
+🎨 3. STYLING & THEMES (theme.ts, use-theme.ts)
+----------------------------------------------------------------
+The app uses a warm organic theme containing Forest Green (#1B4332) and Earthy Brown (#8C6A5C) accents. Colors are read dynamically using the custom useTheme() hook to adapt to system dark/light appearances.
+
+----------------------------------------------------------------
+🖥️ 4. KEY SCREEN LOGIC
+----------------------------------------------------------------
+
+A. EXPLORE SCREEN (src/app/index.tsx)
+* Handles searches and filters. Every time you switch cities, a useEffect runs to reset search queries and selected areas to keep results clean.
+* Uses the filter logic below:
+  -------------------------------------------------------------
+  const filteredDesigners = MOCK_DESIGNERS.filter((designer) => {
+    const matchesCity = designer.city === city;
+    const matchesArea = selectedArea === 'All Areas' || designer.area === selectedArea;
+    const matchesSearch =
+      designer.firm.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      designer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      designer.specialties.some((spec) => spec.toLowerCase().includes(searchQuery.toLowerCase()));
+    
+    return matchesCity && matchesArea && matchesSearch;
+  });
+  -------------------------------------------------------------
+
+B. STUDY COMPARISON GRID (src/app/compare.tsx)
+* Uses a double ScrollView layout:
+  - Outer Horizontal ScrollView: Lets you swipe left and right to inspect the different studios.
+  - Inner Vertical ScrollView: Locks rows together so headers align perfectly with their corresponding details.
+* First cell of each row contains static labels ("Experience", "Specialties", "Cost"), and subsequent columns map dynamically to show each compared designer's info side-by-side.
+
+C. SAVED LIST (src/app/saved.tsx)
+* Filters the main designer mock dataset using savedIds retrieved from AppContext. It maps them cleanly into a list using the DesignerCard component.

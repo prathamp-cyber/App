@@ -1,0 +1,67 @@
+================================================================
+📱 EXPO GO CONNECTION & TROUBLESHOOTING GUIDE
+================================================================
+
+This guide explains how to run your Expo project (Dwellist) and connect it to your mobile phone using Expo Go, even if you run into connection or QR code scanning errors.
+
+----------------------------------------------------------------
+🔍 PART 1: WHY DOES THE QR CODE FAIL?
+----------------------------------------------------------------
+When you start Expo, it runs a local server (Metro Bundler) on your computer. To load the app, your phone needs to talk to this server. This connection fails for three main reasons:
+
+1. VIRTUAL ADAPTERS (Most Common):
+If you have VMware, VirtualBox, Docker, WSL, or VPNs installed, your PC has virtual network adapters. Expo might choose one of those virtual IPs (like 192.168.227.1) instead of your physical Wi-Fi IP (like 10.84.168.210). Your phone cannot reach a virtual IP.
+
+2. WINDOWS FIREWALL / NETWORK PROFILE:
+Windows blocks incoming traffic by default if your Wi-Fi is set to a "Public" profile instead of "Private".
+
+3. WI-FI MISMATCH:
+Your phone and computer must be on the EXACT same Wi-Fi connection, and the router must allow local communication (AP Isolation disabled).
+
+----------------------------------------------------------------
+🚀 PART 2: THE TWO WAYS TO RUN THE APP
+----------------------------------------------------------------
+
+OPTION A: Tunnel Mode (Easiest & Most Reliable)
+Tunneling routes traffic through an external server. This works even if you are on school/office/cafe Wi-Fi, using mobile data, or have firewalls blocking you.
+👉 Run:
+   npm run tunnel
+
+OPTION B: LAN Mode (Fastest Performance)
+Connects your phone directly to your computer's local IP. Requires both devices to be on the same Wi-Fi network.
+👉 Run:
+   npm start
+
+* If it binds to the wrong IP (VMware/VirtualBox), force the correct IP:
+  1. Find your physical Wi-Fi IP by running:
+     npm run diagnose
+  2. Start Expo with that IP:
+     - In PowerShell:
+       $env:REACT_NATIVE_PACKAGER_HOSTNAME="YOUR_WIFI_IP"; npm start
+     - In Command Prompt:
+       set REACT_NATIVE_PACKAGER_HOSTNAME=YOUR_WIFI_IP&& npm start
+
+----------------------------------------------------------------
+🛠️ PART 3: STEP-BY-STEP CONNECTION WALKTHROUGH
+----------------------------------------------------------------
+Follow these steps to connect your device:
+
+1. Install "Expo Go" app from the App Store (iOS) or Google Play Store (Android).
+2. Connect your phone to the same Wi-Fi as your computer.
+3. Windows Setup:
+   - Go to Windows Settings -> Network & Internet -> Wi-Fi.
+   - Click on your active Wi-Fi network.
+   - Change Network Profile type from "Public" to "Private".
+4. iPhone Setup (if using iOS):
+   - Go to Settings -> Expo Go.
+   - Turn ON "Local Network" access.
+5. In your computer terminal, run:
+   npm run tunnel
+6. Open your phone Camera (iOS) or Expo Go App (Android) and scan the QR code.
+
+----------------------------------------------------------------
+📋 SUMMARY OF COMMANDS
+----------------------------------------------------------------
+* npm start       -> Runs server on LAN.
+* npm run tunnel  -> Runs server using ngrok tunnel (Works everywhere).
+* npm run diagnose -> Checks which IPs are active on your computer.

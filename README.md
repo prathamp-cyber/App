@@ -12,11 +12,22 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 2. Start the app
 
-   ```bash
-   npx expo start
-   ```
+For general development over local network (LAN):
+```bash
+npm start
+```
 
-In the output, you'll find options to open the app in a
+If you encounter connection errors or cannot scan the QR code in Expo Go on your mobile phone:
+* **Option A (Recommended):** Run the dev server with an ngrok tunnel (bypasses network restrictions, firewalls, and different Wi-Fi networks):
+  ```bash
+  npm run tunnel
+  ```
+* **Option B:** Run the diagnostic tool to identify local network issues or IP binding conflicts:
+  ```bash
+  npm run diagnose
+  ```
+
+In the output of `npm start` or `npm run tunnel`, you'll find options to open the app in a:
 
 - [development build](https://docs.expo.dev/develop/development-builds/introduction/)
 - [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
