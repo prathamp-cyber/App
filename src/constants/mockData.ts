@@ -64,10 +64,10 @@ export const MOCK_DESIGNERS: Designer[] = [
     firm: "Designer's Circle",
     area: "Tagore Road",
     city: "Gandhidham",
-    address: "302, Sunrise Arcade, Tagore Road, Gandhidham, Gujarat 370201",
-    rating: 4.8,
+    address: "1002, Binori B-Square-2, Iscon Road, Ambli, Ahmedabad (Serving Gandhidham)",
+    rating: 5.0,
     googleReviewCount: 142,
-    experience: 32,
+    experience: 39,
     completedProjects: 850,
     specialties: ["Modern Luxury", "Corporate Offices", "Hospitality", "Residential Bungalows"],
     avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80",
@@ -78,7 +78,7 @@ export const MOCK_DESIGNERS: Designer[] = [
       "https://images.unsplash.com/photo-1617806118233-18e1db207f62?w=600&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=600&auto=format&fit=crop&q=80"
     ],
-    description: "Designer's Circle is one of the premier architectural and interior design consulting firms in Kutch. With over three decades of design excellence under Rajesh Sheth, we create luxury environments that perfectly blend functionality with high-end style.",
+    description: "Designer's Circle is one of the premier architectural and interior design consulting firms in Kutch and Ahmedabad. With over three decades of design excellence under Rajesh Sheth, we create luxury environments that perfectly blend functionality with high-end style.",
     contactNumber: "+91 98252 23412",
     email: "info@designerscircle.co.in",
     responseTime: "Same day",
@@ -86,7 +86,7 @@ export const MOCK_DESIGNERS: Designer[] = [
       communication: 4.9,
       versatility: 4.8,
       timeliness: 4.7,
-      professionalism: 4.9
+      professionalism: 5.0
     },
     reviews: [
       {
@@ -99,7 +99,7 @@ export const MOCK_DESIGNERS: Designer[] = [
       {
         id: "r1_2",
         userName: "Neha Gidwani",
-        rating: 4,
+        rating: 5,
         comment: "Designed our family bungalow in Gandhidham. Premium outcomes, though the timelines extended slightly. The wood and gold finishes are gorgeous.",
         date: "5 months ago"
       }
@@ -107,16 +107,16 @@ export const MOCK_DESIGNERS: Designer[] = [
   },
   {
     id: "2",
-    name: "Ar. Amit Patel",
-    firm: "Sthapatya Design Studio",
+    name: "Ar. Jitu Mistry",
+    firm: "Jitu Mistry & Associates",
     area: "Sector 1A",
     city: "Gandhidham",
-    address: "Shop 12, Sector 1A, Near Oslo Cinema, Gandhidham, Gujarat 370201",
-    rating: 4.7,
-    googleReviewCount: 89,
+    address: "SHIVAM, 1st Floor, Plot No. 109, Sec-1/A, Gandhidham (Kutch) 370201",
+    rating: 4.8,
+    googleReviewCount: 120,
     experience: 15,
     completedProjects: 340,
-    specialties: ["Minimalist", "Sustainable Design", "Residential Flats", "Showrooms"],
+    specialties: ["Luxury Villas", "Corporate Offices", "Commercial Spaces", "Residential Planning"],
     avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
     coverImage: "https://images.unsplash.com/photo-1616486038857-8975b77ea61a?w=800&auto=format&fit=crop&q=80",
     portfolio: [
@@ -124,22 +124,22 @@ export const MOCK_DESIGNERS: Designer[] = [
       "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=600&auto=format&fit=crop&q=80"
     ],
-    description: "Sthapatya Design Studio provides contemporary architectural planning and interior design solutions. Led by Amit Patel, the studio focuses on space-saving, modern minimalist designs tailored for urban apartments and retail outlets.",
-    contactNumber: "+91 94263 87401",
-    email: "amit.patel@sthapatyastudio.com",
+    description: "Jitu Mistry & Associates is a distinguished architectural and interior design firm in Gandhidham with over 15 years of design excellence. We specialize in luxury villas, corporate workspaces, and complete residential design.",
+    contactNumber: "+91 98254 39499",
+    email: "info@jitumistry.com",
     responseTime: "Within 24 hours",
     surveyMetrics: {
-      communication: 4.6,
-      versatility: 4.5,
+      communication: 4.8,
+      versatility: 4.7,
       timeliness: 4.8,
-      professionalism: 4.7
+      professionalism: 4.8
     },
     reviews: [
       {
         id: "r2_1",
         userName: "Sanjay Thacker",
         rating: 5,
-        comment: "Great experience working with Amit. They transformed our 3BHK flat in Sector 1A with a very clean, minimalist, and spacious layout.",
+        comment: "Great experience working with Jitu Mistry. They transformed our villa in Sector 1A with a very clean, minimalist, and spacious layout.",
         date: "1 month ago"
       },
       {
@@ -153,16 +153,16 @@ export const MOCK_DESIGNERS: Designer[] = [
   },
   {
     id: "3",
-    name: "Karan Maheshwari",
-    firm: "Kavya Interior",
-    area: "Ward 12/B",
+    name: "Kunjan Thacker",
+    firm: "The Diva Design Studio",
+    area: "Sector 8",
     city: "Gandhidham",
-    address: "Plot 245, Ward 12/B, Gandhidham, Gujarat 370201",
-    rating: 4.6,
-    googleReviewCount: 74,
+    address: "Times Square 4, Office No. 2, Ground Floor, Sindhubaug Road, Gandhidham, Gujarat 370201",
+    rating: 4.9,
+    googleReviewCount: 98,
     experience: 12,
     completedProjects: 260,
-    specialties: ["Modular Kitchens", "Modern Apartments", "Wardrobes & Custom Furniture"],
+    specialties: ["Luxury Interiors", "Residential & Commercial", "Bespoke Furniture", "Modern Spaces"],
     avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80",
     coverImage: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=800&auto=format&fit=crop&q=80",
     portfolio: [
@@ -170,29 +170,29 @@ export const MOCK_DESIGNERS: Designer[] = [
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&auto=format&fit=crop&q=80"
     ],
-    description: "Kavya Interior is a full-service residential design studio in Ward 12/B. We excel in custom modular furniture, high-end kitchens, and complete home transformations that emphasize comfort and space optimization.",
-    contactNumber: "+91 99092 11223",
-    email: "contact@kavyainterior.com",
+    description: "The Diva Design Studio, led by Kunjan Thacker, is known for creating tailored, luxury interiors for both residential and commercial clients in Gandhidham. We focus on premium quality, contemporary themes, and client-centric designs.",
+    contactNumber: "+91 82387 26291",
+    email: "thediva.designstudio@gmail.com",
     responseTime: "Within 24 hours",
     surveyMetrics: {
-      communication: 4.7,
-      versatility: 4.3,
-      timeliness: 4.5,
-      professionalism: 4.6
+      communication: 4.9,
+      versatility: 4.8,
+      timeliness: 4.8,
+      professionalism: 4.9
     },
     reviews: [
       {
         id: "r3_1",
         userName: "Hardik Vora",
-        rating: 4,
-        comment: "Kavya Interior designed our modular kitchen. Excellent finish and heavy-duty materials used. Very satisfied with the service.",
+        rating: 5,
+        comment: "The Diva Design Studio designed our modular kitchen. Excellent finish and heavy-duty materials used. Very satisfied with the service.",
         date: "4 months ago"
       },
       {
         id: "r3_2",
         userName: "Pinky Jadeja",
         rating: 5,
-        comment: "They handled the complete interior of my apartment in Ward 12/B. Extremely cooperative team and beautiful final output.",
+        comment: "They handled the complete interior of my apartment. Extremely cooperative team and beautiful final output.",
         date: "6 months ago"
       }
     ]
@@ -200,10 +200,10 @@ export const MOCK_DESIGNERS: Designer[] = [
   {
     id: "4",
     name: "Ar. Parth Mehta",
-    firm: "Wallcraft Architects & Interiors",
+    firm: "Wallcraft Architects",
     area: "Oslo Road",
     city: "Gandhidham",
-    address: "Second Floor, Metro Plaza, Oslo Road, Gandhidham, Gujarat 370201",
+    address: "Plot No. 2 & 3, Ward 10A, Vidyanagar, Gandhidham, Gujarat 370201",
     rating: 4.9,
     googleReviewCount: 110,
     experience: 8,
@@ -216,15 +216,15 @@ export const MOCK_DESIGNERS: Designer[] = [
       "https://images.unsplash.com/photo-1613977257363-707ba9348227?w=600&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&auto=format&fit=crop&q=80"
     ],
-    description: "At Wallcraft, we believe that design should connect people with their environments. Parth Mehta leads a young, dynamic team focusing on fresh, contemporary styles, commercial spaces, and incorporating biophilic green elements into workspaces.",
-    contactNumber: "+91 97241 55621",
-    email: "parth@wallcraft.in",
+    description: "At Wallcraft Architects, we believe that design should connect people with their environments. Parth Mehta leads a young, dynamic team focusing on fresh, contemporary styles, commercial spaces, and incorporating biophilic green elements into workspaces.",
+    contactNumber: "+91 70692 45666",
+    email: "info@wallcraftarchitects.in",
     responseTime: "Same day",
     surveyMetrics: {
       communication: 4.9,
       versatility: 4.9,
       timeliness: 4.6,
-      professionalism: 4.8
+      professionalism: 4.9
     },
     reviews: [
       {
@@ -249,12 +249,12 @@ export const MOCK_DESIGNERS: Designer[] = [
     firm: "Sarvam Interior",
     area: "Ward 12/B",
     city: "Gandhidham",
-    address: "Shop 4, Patel Trade Centre, Ward 12/B, Gandhidham, Gujarat 370201",
+    address: "Plot No. 162, Ward 12/B, Behind Swagat Restaurant, Gandhidham, Gujarat 370201",
     rating: 4.5,
     googleReviewCount: 52,
     experience: 18,
     completedProjects: 410,
-    specialties: ["Classic Indian", "Wooden Handcrafts", "Pooja Rooms", "Traditional Gujarati Interiors"],
+    specialties: ["Turnkey Projects", "Material Contracting", "Residential Planning", "Custom Carpentry"],
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
     coverImage: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&auto=format&fit=crop&q=80",
     portfolio: [
@@ -262,7 +262,7 @@ export const MOCK_DESIGNERS: Designer[] = [
       "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=600&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1540518614846-7eded433c457?w=600&auto=format&fit=crop&q=80"
     ],
-    description: "Sarvam Interior specializes in integrating traditional Indian aesthetics with modern utility. Led by Suresh Patel, we bring exquisite woodwork, custom-carved screens, and traditional Gujarati patterns into premium residential spaces.",
+    description: "Sarvam Interior specializes in turnkey interior designs and custom material execution. Led by Suresh Patel, we deliver high-quality woodwork, smart storage solutions, and home renovations in Gandhidham.",
     contactNumber: "+91 94274 33202",
     email: "sarvam_gd@yahoo.com",
     responseTime: "1-2 days",
@@ -276,7 +276,7 @@ export const MOCK_DESIGNERS: Designer[] = [
       {
         id: "r5_1",
         userName: "Gopal Patel",
-        rating: 4.5,
+        rating: 5,
         comment: "Excellent wooden carvings and custom swings (jhulas) provided. Best place if you want a classic, warm Indian home styling.",
         date: "8 months ago"
       },
@@ -295,7 +295,7 @@ export const MOCK_DESIGNERS: Designer[] = [
     firm: "Perfect Interior",
     area: "Adipur",
     city: "Gandhidham",
-    address: "Main Market, Adipur, Gandhidham, Gujarat 370205",
+    address: "Shop No. 4, Ward 6/C, Plot No. 13, Rambaug Road, Adipur, Gandhidham, Gujarat 370205",
     rating: 4.3,
     googleReviewCount: 45,
     experience: 7,
@@ -307,7 +307,7 @@ export const MOCK_DESIGNERS: Designer[] = [
       "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=600&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1600121848594-d8644e57abab?w=600&auto=format&fit=crop&q=80"
     ],
-    description: "Perfect Interior provides highly functional and budget-optimized interior solutions for homes and small businesses in the Gandhidham-Adipur twin cities. We specialize in ceiling designs, TV units, and office workstation partition systems.",
+    description: "Perfect Interior provides highly functional and budget-optimized interior solutions for homes and offices in the Gandhidham-Adipur twin cities. We specialize in modular styling, false ceilings, and partition systems.",
     contactNumber: "+91 98254 99012",
     email: "perfectinteriors@adipur.com",
     responseTime: "Within 24 hours",
@@ -338,9 +338,9 @@ export const MOCK_DESIGNERS: Designer[] = [
     id: "7",
     name: "Devendra Chavda",
     firm: "Build And Design",
-    area: "Sector 8",
+    area: "Tagore Road",
     city: "Gandhidham",
-    address: "Block B-45, Sector 8, Gandhidham, Gujarat 370201",
+    address: "Tagore Road, Near Main Market, Gandhidham, Gujarat 370201",
     rating: 4.8,
     googleReviewCount: 95,
     experience: 10,
@@ -384,14 +384,14 @@ export const MOCK_DESIGNERS: Designer[] = [
   // --- AHMEDABAD DESIGNERS ---
   {
     id: "8",
-    name: "Snehal Suthar",
+    name: "Snehal & Bhadri Suthar",
     firm: "The Grid Architects",
-    area: "Satellite",
+    area: "SG Highway",
     city: "Ahmedabad",
-    address: "10, Sunrise Park, Near Vastrapur Lake, Satellite, Ahmedabad, Gujarat 380015",
+    address: "C-1001, 10th Floor, Ganesh Meridian, Opposite Gujarat High Court, S.G. Highway, Ahmedabad, Gujarat 380060",
     rating: 4.9,
     googleReviewCount: 182,
-    experience: 22,
+    experience: 24,
     completedProjects: 480,
     specialties: ["Biophilic Design", "Modern Luxury Villa", "Eco-friendly Interiors", "Brutalist Spaces"],
     avatar: "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150&auto=format&fit=crop&q=80",
@@ -401,8 +401,8 @@ export const MOCK_DESIGNERS: Designer[] = [
       "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=600&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&auto=format&fit=crop&q=80"
     ],
-    description: "The Grid Architects, led by Snehal and Bhadri Suthar, is internationally acclaimed for integrating biophilic green concepts with modern luxury. We design spaces that elevate the soul and honor sustainability.",
-    contactNumber: "+91 79268 53412",
+    description: "The Grid Architects, led by Snehal and Bhadri Suthar, is nationally and internationally acclaimed for integrating biophilic green concepts with modern luxury. We design sustainable spaces that elevate the soul.",
+    contactNumber: "+91 99786 51571",
     email: "design@thegridarchitects.com",
     responseTime: "Same day",
     surveyMetrics: {
@@ -437,7 +437,7 @@ export const MOCK_DESIGNERS: Designer[] = [
     address: "A-201, Shivalik Plaza, Bodakdev, Ahmedabad, Gujarat 380054",
     rating: 4.8,
     googleReviewCount: 96,
-    experience: 18,
+    experience: 24,
     completedProjects: 310,
     specialties: ["Contemporary Villas", "Minimalist Residential", "Boutique Offices"],
     avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
@@ -472,7 +472,7 @@ export const MOCK_DESIGNERS: Designer[] = [
     firm: "Malvi Gajjar Architects",
     area: "Satellite",
     city: "Ahmedabad",
-    address: "305, Satellite Plaza, Opposite Mansi Tower, Satellite, Ahmedabad, Gujarat 380015",
+    address: "701, Zion Prime, Thaltej - Shilaj Road, near Copper Stone, Ahmedabad, Gujarat 380059",
     rating: 4.7,
     googleReviewCount: 124,
     experience: 20,
@@ -485,7 +485,7 @@ export const MOCK_DESIGNERS: Designer[] = [
       "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&auto=format&fit=crop&q=80"
     ],
     description: "Malvi Gajjar Architects is a top interior designing studio offering premium turnkey home styling and architectural consulting in Ahmedabad. We translate your lifestyle into high-end, comfortable living environments.",
-    contactNumber: "+91 98250 54321",
+    contactNumber: "+91 99099 77200",
     email: "design@malvigajjar.com",
     responseTime: "Within 24 hours",
     surveyMetrics: {
@@ -508,9 +508,9 @@ export const MOCK_DESIGNERS: Designer[] = [
     id: "11",
     name: "Jignesh Patel",
     firm: "Montdor Interior",
-    area: "SG Highway",
+    area: "Bodakdev",
     city: "Ahmedabad",
-    address: "First Floor, Signature Complex, S.G. Highway, Ahmedabad, Gujarat 380054",
+    address: "202, Aaron Spectra, Rajpath Rangoli Road, Behind Rajpath Club, Bodakdev, Ahmedabad, Gujarat 380054",
     rating: 4.8,
     googleReviewCount: 320,
     experience: 11,
@@ -522,7 +522,7 @@ export const MOCK_DESIGNERS: Designer[] = [
       "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=600&auto=format&fit=crop&q=80",
       "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&auto=format&fit=crop&q=80"
     ],
-    description: "Montdor Interior is a leading turnkey design company on SG Highway. Known for prompt execution and high-quality modular furniture factory finishes, we design ready-to-move-in homes and offices.",
+    description: "Montdor Interior is a leading turnkey design company in Ahmedabad. Known for prompt execution and high-quality modular furniture factory finishes, we design ready-to-move-in homes and offices.",
     contactNumber: "+91 79400 98765",
     email: "info@montdorinterior.com",
     responseTime: "Same day",
@@ -548,7 +548,7 @@ export const MOCK_DESIGNERS: Designer[] = [
     firm: "d6thD Design Studio",
     area: "CG Road",
     city: "Ahmedabad",
-    address: "Block C, CG Square, C.G. Road, Ahmedabad, Gujarat 380009",
+    address: "Tribhuvana, Khanderaopura, Near Ahmedabad, Gujarat 382120",
     rating: 4.9,
     googleReviewCount: 156,
     experience: 16,
