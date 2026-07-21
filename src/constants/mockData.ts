@@ -579,5 +579,52 @@ export const MOCK_DESIGNERS: Designer[] = [
         date: "3 months ago"
       }
     ]
+  },
+  {
+    id: "13",
+    name: "Ar. Hiren Patel",
+    firm: "Hiren Patel Architects",
+    area: "SG Highway",
+    city: "Ahmedabad",
+    address: "Survey No. 417, Near Narmada Canal Road, Opp. Nayara Petrol Pump, Sanand-Sanathal Highway, Telav, Ahmedabad, Gujarat 382210",
+    rating: 4.8,
+    googleReviewCount: 152,
+    experience: 37,
+    completedProjects: 920,
+    specialties: ["Biophilic Architecture", "Luxury Residences", "Modern Landscaping", "Sustainable Design"],
+    avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=150&auto=format&fit=crop&q=80",
+    coverImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=80",
+    portfolio: [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1618219908412-a29a1bb7b86e?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?w=600&auto=format&fit=crop&q=80"
+    ],
+    description: "Hiren Patel Architects is a pioneering firm established in 1989, famous for its philosophy of blending architecture seamlessly with interior and landscape design. We prioritize green features, natural light, and bespoke craftsmanship.",
+    contactNumber: "+91 79 2686 0000",
+    email: "info@hpa.co.in",
+    responseTime: "Within 24 hours",
+    surveyMetrics: {
+      communication: 4.8,
+      versatility: 4.9,
+      timeliness: 4.6,
+      professionalism: 4.8
+    },
+    reviews: [
+      {
+        id: "r13_1",
+        userName: "Arpan Patel",
+        rating: 5,
+        comment: "Excellent integration of architecture and landscape for our farmhouse. Very elegant designs.",
+        date: "1 month ago"
+      },
+      {
+        id: "r13_2",
+        userName: "Meera Shah",
+        rating: 4.5,
+        comment: "Highly experienced team. The attention they give to natural materials is remarkable.",
+        date: "3 months ago"
+      }
+    ]
   }
 ];
