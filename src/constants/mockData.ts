@@ -380,6 +380,52 @@ export const MOCK_DESIGNERS: Designer[] = [
       }
     ]
   },
+  {
+    id: "14",
+    name: "Ar. Pankaj R. Pandya",
+    firm: "Sthapatya A Design Studio",
+    area: "Sector 1A",
+    city: "Gandhidham",
+    address: "Bhagwati Chambers, 2nd Floor, Plot No. 279, Sector 1A, Gandhidham, Kutch, Gujarat 370201",
+    rating: 4.7,
+    googleReviewCount: 84,
+    experience: 22,
+    completedProjects: 410,
+    specialties: ["Contemporary Architecture", "Landscape Design", "Residential Bungalows", "Practical Interior Planning"],
+    avatar: "https://images.unsplash.com/photo-1556157382-97eda2d62296?w=150&auto=format&fit=crop&q=80",
+    coverImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format&fit=crop&q=80",
+    portfolio: [
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=600&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=600&auto=format&fit=crop&q=80"
+    ],
+    description: "Sthapatya A Design Studio, spearheaded by Ar. Pankaj R. Pandya, specializes in contemporary architecture, interiors, and landscaping. We seek to balance space efficiency and raw organic beauty for residences and commercial spaces in Kutch.",
+    contactNumber: "+91 99749 91325",
+    email: "info@sthapatyastudio.com",
+    responseTime: "Within 24 hours",
+    surveyMetrics: {
+      communication: 4.7,
+      versatility: 4.8,
+      timeliness: 4.6,
+      professionalism: 4.7
+    },
+    reviews: [
+      {
+        id: "r14_1",
+        userName: "Deepak Vora",
+        rating: 5,
+        comment: "Excellent architecture and landscape design for our Sector 1A office space. They have a very professional and cooperative team.",
+        date: "2 months ago"
+      },
+      {
+        id: "r14_2",
+        userName: "Vikas Mehta",
+        rating: 4.5,
+        comment: "Great experience working with Pankaj Pandya on our family bungalow. Beautiful and practical interior layouts.",
+        date: "5 months ago"
+      }
+    ]
+  },
 
   // --- AHMEDABAD DESIGNERS ---
   {
