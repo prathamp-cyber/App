@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, StyleSheet, View, Pressable, ScrollView } from 'react-native';
+import { Modal, StyleSheet, View, Pressable, ScrollView, Text } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -12,7 +12,7 @@ import { Spacing } from '@/constants/theme';
 export function UserProfileModal() {
   const theme = useTheme();
   const { user, isProfileModalVisible, setProfileModalVisible, logout } = useAuth();
-  const { savedIds, comparedIds, city } = useAppContext();
+  const { savedIds, comparedIds, city, themeMode, setThemeMode } = useAppContext();
 
   if (!user) return null;
 
@@ -108,9 +108,50 @@ export function UserProfileModal() {
               </View>
             </View>
 
+            {/* Appearance / Dark Mode Switcher */}
+            <View style={styles.themeSection}>
+              <ThemedText type="smallBold" style={[styles.sectionHeading, { color: theme.textSecondary }]}>
+                APP APPEARANCE
+              </ThemedText>
+              <View style={[styles.themeSegmentContainer, { backgroundColor: theme.backgroundElement, borderColor: theme.border }]}>
+                <Pressable
+                  onPress={() => setThemeMode('light')}
+                  style={[
+                    styles.themeOptionBtn,
+                    themeMode === 'light' && [styles.themeOptionSelected, { backgroundColor: theme.cardBackground, borderColor: green }]
+                  ]}
+                >
+                  <Ionicons name="sunny-outline" size={16} color={themeMode === 'light' ? green : theme.textSecondary} />
+                  <Text style={[styles.themeOptionText, { color: themeMode === 'light' ? green : theme.textSecondary }]}>Light</Text>
+                </Pressable>
+
+                <Pressable
+                  onPress={() => setThemeMode('dark')}
+                  style={[
+                    styles.themeOptionBtn,
+                    themeMode === 'dark' && [styles.themeOptionSelected, { backgroundColor: theme.cardBackground, borderColor: green }]
+                  ]}
+                >
+                  <Ionicons name="moon-outline" size={16} color={themeMode === 'dark' ? green : theme.textSecondary} />
+                  <Text style={[styles.themeOptionText, { color: themeMode === 'dark' ? green : theme.textSecondary }]}>Dark</Text>
+                </Pressable>
+
+                <Pressable
+                  onPress={() => setThemeMode('system')}
+                  style={[
+                    styles.themeOptionBtn,
+                    themeMode === 'system' && [styles.themeOptionSelected, { backgroundColor: theme.cardBackground, borderColor: green }]
+                  ]}
+                >
+                  <Ionicons name="desktop-outline" size={16} color={themeMode === 'system' ? green : theme.textSecondary} />
+                  <Text style={[styles.themeOptionText, { color: themeMode === 'system' ? green : theme.textSecondary }]}>System</Text>
+                </Pressable>
+              </View>
+            </View>
+
             {/* Profile Options List */}
             <View style={styles.optionsList}>
-              <View style={[styles.optionItem, { borderColor: theme.border }]}>
+              <View style={[styles.optionItem, { borderColor: theme.border, backgroundColor: theme.cardBackground }]}>
                 <View style={styles.optionLeft}>
                   <Ionicons name="calendar-outline" size={18} color={theme.textSecondary} />
                   <ThemedText style={styles.optionText}>Member Since</ThemedText>
@@ -120,19 +161,19 @@ export function UserProfileModal() {
                 </ThemedText>
               </View>
 
-              <View style={[styles.optionItem, { borderColor: theme.border }]}>
+              <View style={[styles.optionItem, { borderColor: theme.border, backgroundColor: theme.cardBackground }]}>
                 <View style={styles.optionLeft}>
                   <Ionicons name="shield-checkmark-outline" size={18} color={theme.textSecondary} />
                   <ThemedText style={styles.optionText}>Account Status</ThemedText>
                 </View>
-                <View style={[styles.verifiedTag, { backgroundColor: '#E8F8F0' }]}>
-                  <ThemedText style={{ color: '#27AE60', fontSize: 10, fontWeight: '700' }}>
+                <View style={[styles.verifiedTag, { backgroundColor: theme.accentGreenLight }]}>
+                  <ThemedText style={{ color: green, fontSize: 10, fontWeight: '700' }}>
                     VERIFIED
                   </ThemedText>
                 </View>
               </View>
 
-              <View style={[styles.optionItem, { borderColor: theme.border }]}>
+              <View style={[styles.optionItem, { borderColor: theme.border, backgroundColor: theme.cardBackground }]}>
                 <View style={styles.optionLeft}>
                   <Ionicons name="location-outline" size={18} color={theme.textSecondary} />
                   <ThemedText style={styles.optionText}>Primary Location</ThemedText>
@@ -148,12 +189,12 @@ export function UserProfileModal() {
               onPress={logout}
               style={({ pressed }) => [
                 styles.logoutBtn,
-                { borderColor: '#FADBD8', backgroundColor: '#FDEDEC' },
+                { borderColor: theme.border, backgroundColor: theme.accentBrownLight },
                 pressed && { opacity: 0.8 }
               ]}
             >
-              <Ionicons name="log-out-outline" size={18} color="#C0392B" />
-              <ThemedText type="smallBold" style={{ color: '#C0392B', fontSize: 14 }}>
+              <Ionicons name="log-out-outline" size={18} color={brown} />
+              <ThemedText type="smallBold" style={{ color: brown, fontSize: 14 }}>
                 Sign Out
               </ThemedText>
             </Pressable>
@@ -269,6 +310,38 @@ const styles = StyleSheet.create({
     height: '60%',
     alignSelf: 'center',
   },
+  themeSection: {
+    marginBottom: Spacing.four,
+  },
+  sectionHeading: {
+    fontSize: 10,
+    letterSpacing: 1,
+    marginBottom: 8,
+  },
+  themeSegmentContainer: {
+    flexDirection: 'row',
+    borderRadius: 12,
+    borderWidth: 1,
+    padding: 4,
+    gap: 4,
+  },
+  themeOptionBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  themeOptionSelected: {
+    borderWidth: 1,
+    elevation: 1,
+  },
+  themeOptionText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
   optionsList: {
     gap: 8,
     marginBottom: Spacing.four,
@@ -306,3 +379,4 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 });
+

@@ -16,7 +16,7 @@ import { DesignerDetailModal } from '@/components/designer-detail-modal';
 
 export default function SavedScreen() {
   const theme = useTheme();
-  const { savedIds } = useAppContext();
+  const { savedIds, toggleThemeMode, resolvedTheme } = useAppContext();
   const { user, openAuthModal, openProfileModal } = useAuth();
   const [selectedDesigner, setSelectedDesigner] = useState<Designer | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -53,38 +53,57 @@ export default function SavedScreen() {
             </ThemedText>
           </View>
 
-          {/* Right Header Auth Profile Trigger */}
-          {user ? (
+          <View style={styles.headerRightActions}>
+            {/* Theme Toggle Button */}
             <Pressable
-              onPress={openProfileModal}
+              onPress={toggleThemeMode}
               style={({ pressed }) => [
-                styles.profileButton,
+                styles.themeIconButton,
                 { borderColor: theme.border, backgroundColor: theme.backgroundElement },
-                pressed && { opacity: 0.8 }
+                pressed && { opacity: 0.7 }
               ]}
+              accessibilityLabel="Toggle Light/Dark Theme"
             >
-              {user.avatar ? (
-                <Image source={{ uri: user.avatar }} style={styles.userAvatar} contentFit="cover" />
-              ) : (
-                <View style={[styles.userInitialsBg, { backgroundColor: user.role === 'designer' ? brown : green }]}>
-                  <Text style={styles.userInitialsText}>{user.name.charAt(0)}</Text>
-                </View>
-              )}
-              <View style={styles.onlineDot} />
+              <Ionicons
+                name={resolvedTheme === 'dark' ? 'sunny' : 'moon'}
+                size={16}
+                color={resolvedTheme === 'dark' ? '#F1C40F' : brown}
+              />
             </Pressable>
-          ) : (
-            <Pressable
-              onPress={openAuthModal}
-              style={({ pressed }) => [
-                styles.signInPill,
-                { backgroundColor: green },
-                pressed && { opacity: 0.9 }
-              ]}
-            >
-              <Ionicons name="person-circle-outline" size={16} color="#FFFFFF" />
-              <Text style={styles.signInText}>Sign In</Text>
-            </Pressable>
-          )}
+
+            {/* Right Header Auth Profile Trigger */}
+            {user ? (
+              <Pressable
+                onPress={openProfileModal}
+                style={({ pressed }) => [
+                  styles.profileButton,
+                  { borderColor: theme.border, backgroundColor: theme.backgroundElement },
+                  pressed && { opacity: 0.8 }
+                ]}
+              >
+                {user.avatar ? (
+                  <Image source={{ uri: user.avatar }} style={styles.userAvatar} contentFit="cover" />
+                ) : (
+                  <View style={[styles.userInitialsBg, { backgroundColor: user.role === 'designer' ? brown : green }]}>
+                    <Text style={styles.userInitialsText}>{user.name.charAt(0)}</Text>
+                  </View>
+                )}
+                <View style={styles.onlineDot} />
+              </Pressable>
+            ) : (
+              <Pressable
+                onPress={openAuthModal}
+                style={({ pressed }) => [
+                  styles.signInPill,
+                  { backgroundColor: green },
+                  pressed && { opacity: 0.9 }
+                ]}
+              >
+                <Ionicons name="person-circle-outline" size={16} color="#FFFFFF" />
+                <Text style={styles.signInText}>Sign In</Text>
+              </Pressable>
+            )}
+          </View>
         </View>
 
         {savedDesigners.length === 0 ? (
@@ -153,6 +172,19 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     fontSize: 12,
     marginTop: 2,
+  },
+  headerRightActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  themeIconButton: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   profileButton: {
     position: 'relative',

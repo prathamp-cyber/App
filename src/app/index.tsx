@@ -16,7 +16,7 @@ import { useAuth } from '@/context/AuthContext';
 
 export default function ExploreScreen() {
   const theme = useTheme();
-  const { city, setCity } = useAppContext();
+  const { city, setCity, toggleThemeMode, resolvedTheme } = useAppContext();
   const { user, openAuthModal, openProfileModal } = useAuth();
 
   const [selectedArea, setSelectedArea] = useState('All Areas');
@@ -104,11 +104,28 @@ export default function ExploreScreen() {
             </Pressable>
           </View>
 
-          {/* Right Header Actions: Logo & Auth Profile Button */}
+          {/* Right Header Actions: Logo, Theme Toggle & Auth Profile Button */}
           <View style={styles.headerRightRow}>
             <View style={[styles.logoBadge, { backgroundColor: theme.accentGreenLight }]}>
               <ThemedText type="smallBold" style={{ color: green }}>Dwellist</ThemedText>
             </View>
+
+            {/* Quick Theme Toggle Icon Button */}
+            <Pressable
+              onPress={toggleThemeMode}
+              style={({ pressed }) => [
+                styles.themeIconButton,
+                { borderColor: theme.border, backgroundColor: theme.backgroundElement },
+                pressed && { opacity: 0.7 }
+              ]}
+              accessibilityLabel="Toggle Light/Dark Theme"
+            >
+              <Ionicons
+                name={resolvedTheme === 'dark' ? 'sunny' : 'moon'}
+                size={16}
+                color={resolvedTheme === 'dark' ? '#F1C40F' : brown}
+              />
+            </Pressable>
 
             {user ? (
               <Pressable
@@ -201,7 +218,7 @@ export default function ExploreScreen() {
                     {featuredDesigner.firm}
                   </ThemedText>
                   <ThemedText style={styles.featuredSubtitle}>
-                    {featuredDesigner.name} • {featuredDesigner.experience} Yrs Experience
+                    Lead: {featuredDesigner.name} • {featuredDesigner.experience} Yrs Exp
                   </ThemedText>
                   
                   <View style={styles.featuredReviewsRow}>
@@ -211,7 +228,7 @@ export default function ExploreScreen() {
                       color="#D4AF37"
                     />
                     <Text style={styles.featuredReviewsText}>
-                      {featuredDesigner.rating} ({featuredDesigner.googleReviewCount} Google reviews)
+                      {featuredDesigner.rating} ({featuredDesigner.googleReviewCount} Google reviews) • {featuredDesigner.area}
                     </Text>
                   </View>
                 </View>
@@ -219,14 +236,18 @@ export default function ExploreScreen() {
             </View>
           )}
 
-          {/* Area Filter Scroll Row */}
+          {/* Area Filter Chips */}
           <View style={styles.filterSection}>
             <ThemedText type="smallBold" style={[styles.sectionTitle, { color: brown }]}>
-              Explore by Areas / Wards
+              Filter by Neighborhood
             </ThemedText>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterScroll}>
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.filterScroll}
+            >
               {activeAreas.map((area) => {
-                const isActive = selectedArea === area;
+                const isSelected = selectedArea === area;
                 return (
                   <Pressable
                     key={area}
@@ -234,45 +255,37 @@ export default function ExploreScreen() {
                     style={[
                       styles.filterChip,
                       {
-                        borderColor: isActive ? green : theme.border,
-                        backgroundColor: isActive ? green : theme.backgroundElement,
+                        backgroundColor: isSelected ? green : theme.backgroundElement,
+                        borderColor: isSelected ? green : theme.border,
                       }
                     ]}
                   >
-                    <Text
+                    <ThemedText 
                       style={[
-                        styles.filterChipText,
-                        { color: isActive ? '#FFFFFF' : theme.textSecondary }
+                        styles.filterChipText, 
+                        { color: isSelected ? '#FFFFFF' : theme.textSecondary }
                       ]}
                     >
                       {area}
-                    </Text>
+                    </ThemedText>
                   </Pressable>
                 );
               })}
             </ScrollView>
           </View>
 
-          {/* Listings List */}
+          {/* Designer Listings Grid */}
           <View style={styles.listingsSection}>
             <View style={styles.listingsHeader}>
               <ThemedText type="smallBold" style={[styles.sectionTitle, { color: brown }]}>
-                Interior Designers in {city} ({filteredDesigners.length})
+                {selectedArea === 'All Areas' ? 'All Verified Studios' : `${selectedArea} Studios`}
+              </ThemedText>
+              <ThemedText style={{ fontSize: 12 }} themeColor="textSecondary">
+                {filteredDesigners.length} {filteredDesigners.length === 1 ? 'result' : 'results'}
               </ThemedText>
             </View>
 
-            {filteredDesigners.length === 0 ? (
-              <View style={styles.emptyState}>
-                <Ionicons
-                  name="information-circle-outline"
-                  size={30}
-                  color={theme.textSecondary}
-                />
-                <ThemedText style={{ marginTop: 8 }} themeColor="textSecondary">
-                  No designers found matching your filters.
-                </ThemedText>
-              </View>
-            ) : (
+            {filteredDesigners.length > 0 ? (
               filteredDesigners.map((designer) => (
                 <DesignerCard
                   key={designer.id}
@@ -280,13 +293,23 @@ export default function ExploreScreen() {
                   onPress={() => handleCardPress(designer)}
                 />
               ))
+            ) : (
+              <View style={styles.emptyState}>
+                <Ionicons name="search-outline" size={48} color={theme.textSecondary} />
+                <ThemedText type="subtitle" style={{ fontSize: 18, marginTop: 12 }}>
+                  No Studios Found
+                </ThemedText>
+                <ThemedText style={{ textAlign: 'center', marginTop: 4 }} themeColor="textSecondary">
+                  Try adjusting your search query or area filter for {city}.
+                </ThemedText>
+              </View>
             )}
           </View>
         </ScrollView>
 
       </SafeAreaView>
 
-      {/* Profile Detail Modal */}
+      {/* Designer Detail Modal */}
       <DesignerDetailModal
         designer={selectedDesigner}
         visible={modalVisible}
@@ -296,7 +319,7 @@ export default function ExploreScreen() {
         }}
       />
 
-      {/* City Switcher Modal */}
+      {/* City Selection Dropdown Modal */}
       <Modal
         visible={cityModalVisible}
         transparent={true}
@@ -307,28 +330,29 @@ export default function ExploreScreen() {
           style={styles.modalOverlay} 
           onPress={() => setCityModalVisible(false)}
         >
-          <View style={[styles.cityDropdown, { backgroundColor: theme.background, borderColor: theme.border }]}>
-            <ThemedText type="smallBold" style={[styles.dropdownHeader, { color: brown }]}>
+          <View style={[styles.cityDropdown, { backgroundColor: theme.cardBackground, borderColor: theme.border }]}>
+            <ThemedText type="smallBold" style={[styles.dropdownHeader, { color: theme.textSecondary }]}>
               Select City
             </ThemedText>
             
-            {['Gandhidham', 'Ahmedabad'].map((cityOption) => {
-              const isSelected = city === cityOption;
+            {['Gandhidham', 'Ahmedabad'].map((cityName) => {
+              const isSelected = city === cityName;
               return (
                 <Pressable
-                  key={cityOption}
-                  onPress={() => selectCity(cityOption)}
-                  style={({ pressed }) => [
+                  key={cityName}
+                  onPress={() => selectCity(cityName)}
+                  style={[
                     styles.cityOption,
-                    { backgroundColor: isSelected ? theme.accentGreenLight : 'transparent' },
-                    pressed && styles.pressedHeaderItem
+                    isSelected && { backgroundColor: theme.accentGreenLight }
                   ]}
                 >
                   <ThemedText 
-                    type={isSelected ? "smallBold" : "small"} 
-                    style={{ color: isSelected ? green : theme.text }}
+                    style={{ 
+                      fontWeight: isSelected ? '700' : '500',
+                      color: isSelected ? green : theme.text 
+                    }}
                   >
-                    {cityOption}
+                    {cityName}, Gujarat
                   </ThemedText>
                   {isSelected && (
                     <Ionicons
@@ -368,7 +392,15 @@ const styles = StyleSheet.create({
   headerRightRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
+  },
+  themeIconButton: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   profileButton: {
     position: 'relative',

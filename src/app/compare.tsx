@@ -15,7 +15,7 @@ import { DesignerDetailModal } from '@/components/designer-detail-modal';
 
 export default function CompareScreen() {
   const theme = useTheme();
-  const { comparedIds, toggleCompare, clearCompare } = useAppContext();
+  const { comparedIds, toggleCompare, clearCompare, toggleThemeMode, resolvedTheme } = useAppContext();
   const { user, openAuthModal, openProfileModal } = useAuth();
   const [selectedDesigner, setSelectedDesigner] = useState<Designer | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -61,6 +61,23 @@ export default function CompareScreen() {
                 <ThemedText style={[styles.clearAllText, { color: brown }]}>Clear All</ThemedText>
               </Pressable>
             )}
+
+            {/* Theme Toggle Button */}
+            <Pressable
+              onPress={toggleThemeMode}
+              style={({ pressed }) => [
+                styles.themeIconButton,
+                { borderColor: theme.border, backgroundColor: theme.backgroundElement },
+                pressed && { opacity: 0.7 }
+              ]}
+              accessibilityLabel="Toggle Light/Dark Theme"
+            >
+              <Ionicons
+                name={resolvedTheme === 'dark' ? 'sunny' : 'moon'}
+                size={16}
+                color={resolvedTheme === 'dark' ? '#F1C40F' : brown}
+              />
+            </Pressable>
 
             {user ? (
               <Pressable
@@ -351,7 +368,15 @@ const styles = StyleSheet.create({
   headerRightActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 8,
+  },
+  themeIconButton: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   profileButton: {
     position: 'relative',

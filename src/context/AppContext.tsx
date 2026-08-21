@@ -1,4 +1,7 @@
 import React, { createContext, useContext, useState } from 'react';
+import { useColorScheme as useRNColorScheme } from 'react-native';
+
+export type ThemeMode = 'light' | 'dark' | 'system';
 
 interface AppContextType {
   savedIds: string[];
@@ -10,6 +13,10 @@ interface AppContextType {
   isCompared: (id: string) => boolean;
   city: string;
   setCity: (city: string) => void;
+  themeMode: ThemeMode;
+  setThemeMode: (mode: ThemeMode) => void;
+  toggleThemeMode: () => void;
+  resolvedTheme: 'light' | 'dark';
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -18,6 +25,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [comparedIds, setComparedIds] = useState<string[]>([]);
   const [city, setCity] = useState<string>('Gandhidham');
+  const [themeMode, setThemeMode] = useState<ThemeMode>('system');
+  
+  const systemScheme = useRNColorScheme();
+  const resolvedTheme: 'light' | 'dark' =
+    themeMode === 'system'
+      ? (systemScheme === 'dark' ? 'dark' : 'light')
+      : themeMode;
+
+  const toggleThemeMode = () => {
+    setThemeMode((prev) => (resolvedTheme === 'dark' ? 'light' : 'dark'));
+  };
 
   const toggleSave = (id: string) => {
     setSavedIds((prev) =>
@@ -59,6 +77,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         isCompared,
         city,
         setCity,
+        themeMode,
+        setThemeMode,
+        toggleThemeMode,
+        resolvedTheme,
       }}
     >
       {children}
@@ -73,3 +95,4 @@ export const useAppContext = () => {
   }
   return context;
 };
+
