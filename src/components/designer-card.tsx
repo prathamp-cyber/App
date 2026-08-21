@@ -22,12 +22,22 @@ export const DesignerCard: React.FC<DesignerCardProps> = ({ designer, onPress })
   const saved = isSaved(designer.id);
   const compared = isCompared(designer.id);
 
-  // Use the premium brown and dark green colors defined in our theme
   const brown = theme.primaryBrown;
   const green = theme.primaryGreen;
 
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.cardContainer, pressed && styles.cardPressed]}>
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.cardContainer,
+        {
+          backgroundColor: theme.cardBackground,
+          borderColor: theme.border,
+          shadowColor: theme.cardShadow,
+        },
+        pressed && styles.cardPressed
+      ]}
+    >
       {/* Cover Image */}
       <View style={styles.imageContainer}>
         <Image
@@ -37,13 +47,13 @@ export const DesignerCard: React.FC<DesignerCardProps> = ({ designer, onPress })
           transition={200}
         />
         {/* Rating Badge in Corner */}
-        <View style={[styles.ratingBadge, { backgroundColor: 'rgba(255, 255, 255, 0.95)' }]}>
+        <View style={[styles.ratingBadge, { backgroundColor: theme.cardBackground, borderColor: theme.border, borderWidth: 1 }]}>
           <Ionicons
             name="star"
             size={12}
             color="#D4AF37" // Gold
           />
-          <ThemedText style={[styles.ratingText, { color: '#1E2022' }]}>
+          <ThemedText style={styles.ratingText}>
             {designer.rating}
           </ThemedText>
         </View>
@@ -56,14 +66,14 @@ export const DesignerCard: React.FC<DesignerCardProps> = ({ designer, onPress })
           }}
           style={({ pressed }) => [
             styles.favoriteButton,
-            { backgroundColor: 'rgba(255, 255, 255, 0.9)' },
+            { backgroundColor: theme.cardBackground, borderColor: theme.border, borderWidth: 1 },
             pressed && styles.iconPressed
           ]}
         >
           <Ionicons
             name={saved ? 'heart' : 'heart-outline'}
             size={18}
-            color={saved ? '#C0392B' : '#5A6065'}
+            color={saved ? '#C0392B' : theme.textSecondary}
           />
         </Pressable>
       </View>
@@ -88,7 +98,10 @@ export const DesignerCard: React.FC<DesignerCardProps> = ({ designer, onPress })
             }}
             style={({ pressed }) => [
               styles.compareToggle,
-              { borderColor: compared ? green : theme.border, backgroundColor: compared ? theme.accentGreenLight : '#FFFFFF' },
+              {
+                borderColor: compared ? green : theme.border,
+                backgroundColor: compared ? theme.accentGreenLight : theme.backgroundElement
+              },
               pressed && styles.iconPressed
             ]}
           >
@@ -111,7 +124,7 @@ export const DesignerCard: React.FC<DesignerCardProps> = ({ designer, onPress })
               size={12}
               color={brown}
             />
-            <ThemedText style={styles.tagText}>{designer.area}</ThemedText>
+            <ThemedText style={styles.tagText} themeColor="textSecondary">{designer.area}</ThemedText>
           </View>
 
           <View style={[styles.infoTag, { backgroundColor: theme.backgroundElement }]}>
@@ -120,7 +133,7 @@ export const DesignerCard: React.FC<DesignerCardProps> = ({ designer, onPress })
               size={11}
               color={brown}
             />
-            <ThemedText style={styles.tagText}>{designer.experience} Years Exp</ThemedText>
+            <ThemedText style={styles.tagText} themeColor="textSecondary">{designer.experience} Years Exp</ThemedText>
           </View>
         </View>
 
@@ -141,15 +154,12 @@ export const DesignerCard: React.FC<DesignerCardProps> = ({ designer, onPress })
 
 const styles = StyleSheet.create({
   cardContainer: {
-    backgroundColor: '#FFFFFF',
     borderRadius: 14,
     overflow: 'hidden',
     marginBottom: Spacing.three,
     borderWidth: 1,
-    borderColor: '#E8E6E1', // Delicate warm border
-    shadowColor: '#8D5B4C',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 3,
   },
@@ -175,10 +185,6 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 8,
     gap: 4,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
     elevation: 2,
   },
   ratingText: {
@@ -194,10 +200,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
     elevation: 2,
   },
   iconPressed: {
@@ -251,7 +253,6 @@ const styles = StyleSheet.create({
   },
   tagText: {
     fontSize: 11,
-    color: '#5A6065',
     fontWeight: '500',
   },
   specialtiesRow: {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, ScrollView, StyleSheet, Text, View, Pressable, TextInput, Alert, Platform } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,6 +8,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useAppContext } from '@/context/AppContext';
+import { useAuth } from '@/context/AuthContext';
 import { Designer } from '@/constants/mockData';
 
 interface DesignerDetailModalProps {
@@ -23,11 +24,21 @@ export const DesignerDetailModal: React.FC<DesignerDetailModalProps> = ({
 }) => {
   const theme = useTheme();
   const { isSaved, toggleSave, isCompared, toggleCompare } = useAppContext();
+  const { user } = useAuth();
+
   const [inquiryVisible, setInquiryVisible] = useState(false);
-  const [clientName, setClientName] = useState('');
-  const [clientPhone, setClientPhone] = useState('');
+  const [clientName, setClientName] = useState(user?.name || '');
+  const [clientPhone, setClientPhone] = useState(user?.phone || '');
   const [projectType, setProjectType] = useState('Residential'); // Residential, Commercial, Renovation
   const [inquirySubmitted, setInquirySubmitted] = useState(false);
+
+  // Sync client details when user changes or modal opens
+  useEffect(() => {
+    if (user) {
+      setClientName(user.name);
+      if (user.phone) setClientPhone(user.phone);
+    }
+  }, [user, visible]);
 
   if (!designer) return null;
 
@@ -93,7 +104,7 @@ export const DesignerDetailModal: React.FC<DesignerDetailModalProps> = ({
           {/* Cover & Avatar Header */}
           <View style={styles.profileHeader}>
             <Image source={{ uri: designer.coverImage }} style={styles.coverImage} />
-            <View style={styles.avatarContainer}>
+            <View style={[styles.avatarContainer, { borderColor: theme.background, backgroundColor: theme.background }]}>
               <Image source={{ uri: designer.avatar }} style={styles.avatarImage} />
             </View>
           </View>
@@ -125,21 +136,21 @@ export const DesignerDetailModal: React.FC<DesignerDetailModalProps> = ({
               <ThemedText type="smallBold" style={styles.statVal}>
                 {designer.rating} ★
               </ThemedText>
-              <ThemedText style={styles.statLabel}>Google Rating</ThemedText>
+              <ThemedText style={styles.statLabel} themeColor="textSecondary">Google Rating</ThemedText>
             </View>
-            <View style={styles.divider} />
+            <View style={[styles.divider, { backgroundColor: theme.border }]} />
             <View style={styles.statBox}>
               <ThemedText type="smallBold" style={styles.statVal}>
                 {designer.experience} Yrs
               </ThemedText>
-              <ThemedText style={styles.statLabel}>Experience</ThemedText>
+              <ThemedText style={styles.statLabel} themeColor="textSecondary">Experience</ThemedText>
             </View>
-            <View style={styles.divider} />
+            <View style={[styles.divider, { backgroundColor: theme.border }]} />
             <View style={styles.statBox}>
               <ThemedText type="smallBold" style={styles.statVal}>
                 {designer.completedProjects}+
               </ThemedText>
-              <ThemedText style={styles.statLabel}>Projects</ThemedText>
+              <ThemedText style={styles.statLabel} themeColor="textSecondary">Projects</ThemedText>
             </View>
           </View>
 
@@ -196,12 +207,12 @@ export const DesignerDetailModal: React.FC<DesignerDetailModalProps> = ({
               return (
                 <View key={metric} style={styles.metricRow}>
                   <View style={styles.metricLabelRow}>
-                    <ThemedText style={styles.metricName}>
+                    <ThemedText style={styles.metricName} themeColor="textSecondary">
                       {metric.charAt(0).toUpperCase() + metric.slice(1)}
                     </ThemedText>
                     <ThemedText style={styles.metricScore}>{score} / 5.0</ThemedText>
                   </View>
-                  <View style={styles.progressBarBg}>
+                  <View style={[styles.progressBarBg, { backgroundColor: theme.backgroundElement }]}>
                     <View style={[styles.progressBarFill, { width: `${(score / 5) * 100}%`, backgroundColor: green }]} />
                   </View>
                 </View>
@@ -219,10 +230,10 @@ export const DesignerDetailModal: React.FC<DesignerDetailModalProps> = ({
             </View>
 
             {designer.reviews.map((rev) => (
-              <View key={rev.id} style={[styles.reviewCard, { borderColor: theme.border }]}>
+              <View key={rev.id} style={[styles.reviewCard, { borderColor: theme.border, backgroundColor: theme.cardBackground }]}>
                 <View style={styles.reviewHeader}>
                   <ThemedText type="smallBold" style={styles.reviewerName}>{rev.userName}</ThemedText>
-                  <ThemedText style={styles.reviewDate}>{rev.date}</ThemedText>
+                  <ThemedText style={styles.reviewDate} themeColor="textSecondary">{rev.date}</ThemedText>
                 </View>
                 <View style={styles.reviewStars}>
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -364,7 +375,6 @@ export const DesignerDetailModal: React.FC<DesignerDetailModalProps> = ({
 const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
   },
   headerBar: {
     flexDirection: 'row',

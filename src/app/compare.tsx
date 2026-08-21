@@ -10,11 +10,13 @@ import { Spacing, BottomTabInset, MaxContentWidth } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { MOCK_DESIGNERS, Designer } from '@/constants/mockData';
 import { useAppContext } from '@/context/AppContext';
+import { useAuth } from '@/context/AuthContext';
 import { DesignerDetailModal } from '@/components/designer-detail-modal';
 
 export default function CompareScreen() {
   const theme = useTheme();
   const { comparedIds, toggleCompare, clearCompare } = useAppContext();
+  const { user, openAuthModal, openProfileModal } = useAuth();
   const [selectedDesigner, setSelectedDesigner] = useState<Designer | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -49,14 +51,49 @@ export default function CompareScreen() {
               Side-by-side comparison of local designers
             </ThemedText>
           </View>
-          {comparedDesigners.length > 0 && (
-            <Pressable
-              style={styles.clearAllButton}
-              onPress={clearCompare}
-            >
-              <ThemedText style={[styles.clearAllText, { color: brown }]}>Clear All</ThemedText>
-            </Pressable>
-          )}
+
+          <View style={styles.headerRightActions}>
+            {comparedDesigners.length > 0 && (
+              <Pressable
+                style={styles.clearAllButton}
+                onPress={clearCompare}
+              >
+                <ThemedText style={[styles.clearAllText, { color: brown }]}>Clear All</ThemedText>
+              </Pressable>
+            )}
+
+            {user ? (
+              <Pressable
+                onPress={openProfileModal}
+                style={({ pressed }) => [
+                  styles.profileButton,
+                  { borderColor: theme.border, backgroundColor: theme.backgroundElement },
+                  pressed && { opacity: 0.8 }
+                ]}
+              >
+                {user.avatar ? (
+                  <Image source={{ uri: user.avatar }} style={styles.userAvatar} contentFit="cover" />
+                ) : (
+                  <View style={[styles.userInitialsBg, { backgroundColor: user.role === 'designer' ? brown : green }]}>
+                    <Text style={styles.userInitialsText}>{user.name.charAt(0)}</Text>
+                  </View>
+                )}
+                <View style={styles.onlineDot} />
+              </Pressable>
+            ) : (
+              <Pressable
+                onPress={openAuthModal}
+                style={({ pressed }) => [
+                  styles.signInPill,
+                  { backgroundColor: green },
+                  pressed && { opacity: 0.9 }
+                ]}
+              >
+                <Ionicons name="person-circle-outline" size={16} color="#FFFFFF" />
+                <Text style={styles.signInText}>Sign In</Text>
+              </Pressable>
+            )}
+          </View>
         </View>
 
         {comparedDesigners.length === 0 ? (
@@ -91,7 +128,7 @@ export default function CompareScreen() {
                   <View key={designer.id} style={styles.designerCol}>
                     <Pressable
                       onPress={() => handleDesignerPress(designer)}
-                      style={[styles.miniCard, { borderColor: theme.border }]}
+                      style={[styles.miniCard, { backgroundColor: theme.cardBackground, borderColor: theme.border }]}
                     >
                       <Image source={{ uri: designer.avatar }} style={styles.avatar} />
                       <ThemedText type="smallBold" numberOfLines={1} style={[styles.firmTitle, { color: green }]}>
@@ -108,7 +145,7 @@ export default function CompareScreen() {
                           size={11}
                           color="#D4AF37"
                         />
-                        <Text style={styles.ratingText}>{designer.rating}</Text>
+                        <Text style={[styles.ratingText, { color: theme.text }]}>{designer.rating}</Text>
                       </View>
 
                       {/* Remove button */}
@@ -296,7 +333,6 @@ export default function CompareScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
   },
   safeArea: {
     flex: 1,
@@ -311,6 +347,58 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: Spacing.two,
     marginBottom: Spacing.four,
+  },
+  headerRightActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  profileButton: {
+    position: 'relative',
+    padding: 2,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  userAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+  },
+  userInitialsBg: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  userInitialsText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 13,
+  },
+  onlineDot: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#27AE60',
+    borderWidth: 1.5,
+    borderColor: '#FFFFFF',
+  },
+  signInPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  signInText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
   },
   headerSubtitle: {
     fontSize: 12,
@@ -365,7 +453,6 @@ const styles = StyleSheet.create({
   },
   miniCard: {
     width: '100%',
-    backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderRadius: 12,
     padding: 10,
@@ -406,12 +493,10 @@ const styles = StyleSheet.create({
   rowLabelText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#5A6065',
     textTransform: 'uppercase',
   },
   rowValText: {
     fontSize: 12,
-    color: '#1E2022',
     textAlign: 'center',
   },
   specialtiesCol: {

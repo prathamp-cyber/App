@@ -12,10 +12,13 @@ import { MOCK_DESIGNERS, GANDHIDHAM_AREAS, AHMEDABAD_AREAS, Designer } from '@/c
 import { DesignerCard } from '@/components/designer-card';
 import { DesignerDetailModal } from '@/components/designer-detail-modal';
 import { useAppContext } from '@/context/AppContext';
+import { useAuth } from '@/context/AuthContext';
 
 export default function ExploreScreen() {
   const theme = useTheme();
   const { city, setCity } = useAppContext();
+  const { user, openAuthModal, openProfileModal } = useAuth();
+
   const [selectedArea, setSelectedArea] = useState('All Areas');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDesigner, setSelectedDesigner] = useState<Designer | null>(null);
@@ -72,7 +75,7 @@ export default function ExploreScreen() {
     <ThemedView style={styles.container}>
       <SafeAreaView style={[styles.safeArea, safeAreaStyle]}>
         
-        {/* Header Section with City Selection Selector */}
+        {/* Header Section with City Selection & Auth User Profile Selector */}
         <View style={styles.header}>
           <View>
             <ThemedText style={styles.locationLabel} themeColor="textSecondary">
@@ -100,13 +103,49 @@ export default function ExploreScreen() {
               />
             </Pressable>
           </View>
-          <View style={[styles.logoBadge, { backgroundColor: theme.accentGreenLight }]}>
-            <ThemedText type="smallBold" style={{ color: green }}>Dwellist</ThemedText>
+
+          {/* Right Header Actions: Logo & Auth Profile Button */}
+          <View style={styles.headerRightRow}>
+            <View style={[styles.logoBadge, { backgroundColor: theme.accentGreenLight }]}>
+              <ThemedText type="smallBold" style={{ color: green }}>Dwellist</ThemedText>
+            </View>
+
+            {user ? (
+              <Pressable
+                onPress={openProfileModal}
+                style={({ pressed }) => [
+                  styles.profileButton,
+                  { borderColor: theme.border, backgroundColor: theme.backgroundElement },
+                  pressed && { opacity: 0.8 }
+                ]}
+              >
+                {user.avatar ? (
+                  <Image source={{ uri: user.avatar }} style={styles.userAvatar} contentFit="cover" />
+                ) : (
+                  <View style={[styles.userInitialsBg, { backgroundColor: user.role === 'designer' ? brown : green }]}>
+                    <Text style={styles.userInitialsText}>{user.name.charAt(0)}</Text>
+                  </View>
+                )}
+                <View style={styles.onlineDot} />
+              </Pressable>
+            ) : (
+              <Pressable
+                onPress={openAuthModal}
+                style={({ pressed }) => [
+                  styles.signInPill,
+                  { backgroundColor: green },
+                  pressed && { opacity: 0.9 }
+                ]}
+              >
+                <Ionicons name="person-circle-outline" size={16} color="#FFFFFF" />
+                <Text style={styles.signInText}>Sign In</Text>
+              </Pressable>
+            )}
           </View>
         </View>
 
         {/* Search Bar */}
-        <View style={[styles.searchBarContainer, { borderColor: theme.border }]}>
+        <View style={[styles.searchBarContainer, { borderColor: theme.border, backgroundColor: theme.inputBackground }]}>
           <Ionicons
             name="search"
             size={18}
@@ -196,7 +235,7 @@ export default function ExploreScreen() {
                       styles.filterChip,
                       {
                         borderColor: isActive ? green : theme.border,
-                        backgroundColor: isActive ? green : '#FFFFFF',
+                        backgroundColor: isActive ? green : theme.backgroundElement,
                       }
                     ]}
                   >
@@ -311,7 +350,6 @@ export default function ExploreScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
   },
   safeArea: {
     flex: 1,
@@ -326,6 +364,58 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: Spacing.two,
     marginBottom: Spacing.two,
+  },
+  headerRightRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  profileButton: {
+    position: 'relative',
+    padding: 2,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  userAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+  },
+  userInitialsBg: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  userInitialsText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 13,
+  },
+  onlineDot: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#27AE60',
+    borderWidth: 1.5,
+    borderColor: '#FFFFFF',
+  },
+  signInPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  signInText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
   },
   locationLabel: {
     fontSize: 9,
@@ -359,7 +449,6 @@ const styles = StyleSheet.create({
     paddingVertical: Platform.OS === 'ios' ? 10 : 6,
     gap: 8,
     marginBottom: Spacing.three,
-    backgroundColor: '#FFFFFF',
   },
   searchInput: {
     flex: 1,

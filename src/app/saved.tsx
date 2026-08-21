@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, ScrollView, Pressable, Platform } from 'react-native';
+import { StyleSheet, View, ScrollView, Pressable, Platform, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { Image } from 'expo-image';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -9,12 +10,14 @@ import { Spacing, BottomTabInset, MaxContentWidth } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { MOCK_DESIGNERS, Designer } from '@/constants/mockData';
 import { useAppContext } from '@/context/AppContext';
+import { useAuth } from '@/context/AuthContext';
 import { DesignerCard } from '@/components/designer-card';
 import { DesignerDetailModal } from '@/components/designer-detail-modal';
 
 export default function SavedScreen() {
   const theme = useTheme();
   const { savedIds } = useAppContext();
+  const { user, openAuthModal, openProfileModal } = useAuth();
   const [selectedDesigner, setSelectedDesigner] = useState<Designer | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -41,12 +44,47 @@ export default function SavedScreen() {
         
         {/* Header Action Bar */}
         <View style={styles.header}>
-          <ThemedText type="subtitle" style={{ color: green }}>
-            Saved Studios
-          </ThemedText>
-          <ThemedText style={styles.headerSubtitle} themeColor="textSecondary">
-            Your curated list of favorite design studios
-          </ThemedText>
+          <View>
+            <ThemedText type="subtitle" style={{ color: green }}>
+              Saved Studios
+            </ThemedText>
+            <ThemedText style={styles.headerSubtitle} themeColor="textSecondary">
+              Your curated list of favorite design studios
+            </ThemedText>
+          </View>
+
+          {/* Right Header Auth Profile Trigger */}
+          {user ? (
+            <Pressable
+              onPress={openProfileModal}
+              style={({ pressed }) => [
+                styles.profileButton,
+                { borderColor: theme.border, backgroundColor: theme.backgroundElement },
+                pressed && { opacity: 0.8 }
+              ]}
+            >
+              {user.avatar ? (
+                <Image source={{ uri: user.avatar }} style={styles.userAvatar} contentFit="cover" />
+              ) : (
+                <View style={[styles.userInitialsBg, { backgroundColor: user.role === 'designer' ? brown : green }]}>
+                  <Text style={styles.userInitialsText}>{user.name.charAt(0)}</Text>
+                </View>
+              )}
+              <View style={styles.onlineDot} />
+            </Pressable>
+          ) : (
+            <Pressable
+              onPress={openAuthModal}
+              style={({ pressed }) => [
+                styles.signInPill,
+                { backgroundColor: green },
+                pressed && { opacity: 0.9 }
+              ]}
+            >
+              <Ionicons name="person-circle-outline" size={16} color="#FFFFFF" />
+              <Text style={styles.signInText}>Sign In</Text>
+            </Pressable>
+          )}
         </View>
 
         {savedDesigners.length === 0 ? (
@@ -97,7 +135,6 @@ export default function SavedScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
   },
   safeArea: {
     flex: 1,
@@ -107,12 +144,62 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingVertical: Spacing.two,
     marginBottom: Spacing.four,
   },
   headerSubtitle: {
     fontSize: 12,
     marginTop: 2,
+  },
+  profileButton: {
+    position: 'relative',
+    padding: 2,
+    borderRadius: 20,
+    borderWidth: 1,
+  },
+  userAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+  },
+  userInitialsBg: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  userInitialsText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 13,
+  },
+  onlineDot: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#27AE60',
+    borderWidth: 1.5,
+    borderColor: '#FFFFFF',
+  },
+  signInPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  signInText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '700',
   },
   emptyState: {
     flex: 1,

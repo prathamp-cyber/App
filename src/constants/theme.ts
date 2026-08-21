@@ -13,24 +13,32 @@ export const Colors = {
     background: '#FFFFFF',
     backgroundElement: '#F9F8F6',
     backgroundSelected: '#F0EDE9',
+    cardBackground: '#FFFFFF',
+    inputBackground: '#F9F8F6',
     textSecondary: '#5A6065',
     primaryBrown: '#8D5B4C', // Rich wood brown
     primaryGreen: '#1E3F20', // Dark forest green
     accentGreenLight: '#E8EFE9', // Light green wash for tags
     accentBrownLight: '#F5ECE9', // Light brown wash for tags
     border: '#E8E6E1',
+    divider: '#E5E3DD',
+    cardShadow: 'rgba(141, 91, 76, 0.08)',
   },
   dark: {
     text: '#F5F5F7',
     background: '#121212',
     backgroundElement: '#1E1E1E',
     backgroundSelected: '#2A2A2A',
+    cardBackground: '#1C1C1E',
+    inputBackground: '#1C1C1E',
     textSecondary: '#A0A5AB',
-    primaryBrown: '#A87465',
-    primaryGreen: '#2D5B30',
+    primaryBrown: '#D49685',
+    primaryGreen: '#45854B',
     accentGreenLight: '#1C2E21',
     accentBrownLight: '#2D201C',
     border: '#2E2E2E',
+    divider: '#2C2C2E',
+    cardShadow: 'rgba(0, 0, 0, 0.4)',
   },
 } as const;
 
