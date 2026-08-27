@@ -43,8 +43,14 @@ export default function CompareScreen() {
         
         {/* Header Action Bar */}
         <View style={styles.header}>
-          <View>
-            <ThemedText type="subtitle" style={{ color: green }}>
+          <View style={styles.headerTitleGroup}>
+            <View style={[styles.logoBadge, { backgroundColor: theme.accentGreenLight }]}>
+              <Ionicons name="sparkles" size={12} color={green} style={{ marginRight: 4 }} />
+              <ThemedText type="smallBold" style={{ color: green, fontWeight: '800', fontSize: 12, letterSpacing: 0.3 }}>
+                Dwellist
+              </ThemedText>
+            </View>
+            <ThemedText type="subtitle" style={{ color: green, marginTop: 4 }}>
               Compare Studios
             </ThemedText>
             <ThemedText style={styles.headerSubtitle} themeColor="textSecondary">
@@ -365,15 +371,25 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.two,
     marginBottom: Spacing.four,
   },
+  headerTitleGroup: {
+    alignItems: 'flex-start',
+  },
+  logoBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
   headerRightActions: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
   },
   themeIconButton: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -381,18 +397,22 @@ const styles = StyleSheet.create({
   profileButton: {
     position: 'relative',
     padding: 2,
-    borderRadius: 20,
+    borderRadius: 18,
     borderWidth: 1,
+    height: 36,
+    width: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   userAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
   },
   userInitialsBg: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -403,8 +423,8 @@ const styles = StyleSheet.create({
   },
   onlineDot: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
+    bottom: -1,
+    right: -1,
     width: 10,
     height: 10,
     borderRadius: 5,
@@ -415,14 +435,14 @@ const styles = StyleSheet.create({
   signInPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
+    gap: 5,
+    height: 36,
+    paddingHorizontal: 14,
+    borderRadius: 18,
   },
   signInText: {
     color: '#FFFFFF',
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
   },
   headerSubtitle: {

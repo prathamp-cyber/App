@@ -75,41 +75,48 @@ export default function ExploreScreen() {
     <ThemedView style={styles.container}>
       <SafeAreaView style={[styles.safeArea, safeAreaStyle]}>
         
-        {/* Header Section with City Selection & Auth User Profile Selector */}
+        {/* Header Section with Brand Logo, Location Selection & Action Buttons */}
         <View style={styles.header}>
-          <View>
-            <ThemedText style={styles.locationLabel} themeColor="textSecondary">
-              CURRENT LOCATION
-            </ThemedText>
-            
-            {/* Pressable City Trigger */}
-            <Pressable 
-              onPress={() => setCityModalVisible(true)}
-              style={({ pressed }) => [styles.locationRow, pressed && styles.pressedHeaderItem]}
-            >
-              <Ionicons
-                name="location"
-                size={16}
-                color={brown}
-              />
-              <ThemedText type="smallBold" style={[styles.cityText, { color: green }]}>
-                {city}, Gujarat
-              </ThemedText>
-              <Ionicons
-                name="chevron-down"
-                size={14}
-                color={green}
-                style={{ marginLeft: 2 }}
-              />
-            </Pressable>
-          </View>
-
-          {/* Right Header Actions: Logo, Theme Toggle & Auth Profile Button */}
-          <View style={styles.headerRightRow}>
+          {/* Left Side: Brand Identity & Location Selector */}
+          <View style={styles.headerLeftCol}>
+            {/* Dwellist Brand Badge */}
             <View style={[styles.logoBadge, { backgroundColor: theme.accentGreenLight }]}>
-              <ThemedText type="smallBold" style={{ color: green }}>Dwellist</ThemedText>
+              <Ionicons name="sparkles" size={13} color={green} style={{ marginRight: 4 }} />
+              <ThemedText type="smallBold" style={{ color: green, fontWeight: '800', fontSize: 13, letterSpacing: 0.3 }}>
+                Dwellist
+              </ThemedText>
             </View>
 
+            {/* Location Selector */}
+            <View style={styles.locationContainer}>
+              <ThemedText style={styles.locationLabel} themeColor="textSecondary">
+                LOCATION
+              </ThemedText>
+              
+              <Pressable 
+                onPress={() => setCityModalVisible(true)}
+                style={({ pressed }) => [styles.locationRow, pressed && styles.pressedHeaderItem]}
+              >
+                <Ionicons
+                  name="location"
+                  size={13}
+                  color={brown}
+                />
+                <ThemedText type="smallBold" style={[styles.cityText, { color: green }]}>
+                  {city}, Gujarat
+                </ThemedText>
+                <Ionicons
+                  name="chevron-down"
+                  size={12}
+                  color={green}
+                  style={{ marginLeft: 1 }}
+                />
+              </Pressable>
+            </View>
+          </View>
+
+          {/* Right Side Actions: Theme Toggle & Auth Profile Button */}
+          <View style={styles.headerRightRow}>
             {/* Quick Theme Toggle Icon Button */}
             <Pressable
               onPress={toggleThemeMode}
@@ -389,15 +396,50 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.two,
     marginBottom: Spacing.two,
   },
+  headerLeftCol: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    flexShrink: 1,
+  },
+  logoBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 10,
+    height: 36,
+  },
+  locationContainer: {
+    justifyContent: 'center',
+  },
+  locationLabel: {
+    fontSize: 9,
+    fontWeight: '800',
+    letterSpacing: 0.8,
+  },
+  locationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    marginTop: 1,
+  },
+  cityText: {
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  pressedHeaderItem: {
+    opacity: 0.7,
+  },
   headerRightRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
   },
   themeIconButton: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
@@ -405,18 +447,22 @@ const styles = StyleSheet.create({
   profileButton: {
     position: 'relative',
     padding: 2,
-    borderRadius: 20,
+    borderRadius: 18,
     borderWidth: 1,
+    height: 36,
+    width: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   userAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
   },
   userInitialsBg: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -427,8 +473,8 @@ const styles = StyleSheet.create({
   },
   onlineDot: {
     position: 'absolute',
-    bottom: 0,
-    right: 0,
+    bottom: -1,
+    right: -1,
     width: 10,
     height: 10,
     borderRadius: 5,
@@ -439,38 +485,15 @@ const styles = StyleSheet.create({
   signInPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
+    gap: 5,
+    height: 36,
+    paddingHorizontal: 14,
+    borderRadius: 18,
   },
   signInText: {
     color: '#FFFFFF',
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
-  },
-  locationLabel: {
-    fontSize: 9,
-    fontWeight: '800',
-    letterSpacing: 1,
-  },
-  locationRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginTop: 2,
-  },
-  cityText: {
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  pressedHeaderItem: {
-    opacity: 0.7,
-  },
-  logoBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 8,
   },
   searchBarContainer: {
     flexDirection: 'row',
