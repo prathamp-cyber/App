@@ -11,6 +11,7 @@ import { useTheme } from '@/hooks/use-theme';
 import { MOCK_DESIGNERS, GANDHIDHAM_AREAS, AHMEDABAD_AREAS, Designer } from '@/constants/mockData';
 import { DesignerCard } from '@/components/designer-card';
 import { DesignerDetailModal } from '@/components/designer-detail-modal';
+import { DesignerDashboard } from '@/components/designer-dashboard';
 import { useAppContext } from '@/context/AppContext';
 import { useAuth } from '@/context/AuthContext';
 
@@ -75,11 +76,10 @@ export default function ExploreScreen() {
     <ThemedView style={styles.container}>
       <SafeAreaView style={[styles.safeArea, safeAreaStyle]}>
         
-        {/* Header Section with Brand Logo, Location Selection & Action Buttons */}
+        {/* Clean Header Section: Brand Badge on Left & Profile/Auth Button on Right */}
         <View style={styles.header}>
-          {/* Left Side: Brand Identity & Location Selector */}
+          {/* Left Side: Brand Identity */}
           <View style={styles.headerLeftCol}>
-            {/* Dwellist Brand Badge */}
             <View style={[styles.logoBadge, { backgroundColor: theme.accentGreenLight }]}>
               <Ionicons name="sparkles" size={13} color={green} style={{ marginRight: 4 }} />
               <ThemedText type="smallBold" style={{ color: green, fontWeight: '800', fontSize: 13, letterSpacing: 0.3 }}>
@@ -87,53 +87,16 @@ export default function ExploreScreen() {
               </ThemedText>
             </View>
 
-            {/* Location Selector */}
-            <View style={styles.locationContainer}>
-              <ThemedText style={styles.locationLabel} themeColor="textSecondary">
-                LOCATION
-              </ThemedText>
-              
-              <Pressable 
-                onPress={() => setCityModalVisible(true)}
-                style={({ pressed }) => [styles.locationRow, pressed && styles.pressedHeaderItem]}
-              >
-                <Ionicons
-                  name="location"
-                  size={13}
-                  color={brown}
-                />
-                <ThemedText type="smallBold" style={[styles.cityText, { color: green }]}>
-                  {city}, Gujarat
-                </ThemedText>
-                <Ionicons
-                  name="chevron-down"
-                  size={12}
-                  color={green}
-                  style={{ marginLeft: 1 }}
-                />
-              </Pressable>
-            </View>
+            {user?.role === 'designer' && (
+              <View style={[styles.roleBadgeHeader, { backgroundColor: theme.accentBrownLight }]}>
+                <Ionicons name="briefcase" size={11} color={brown} />
+                <Text style={[styles.roleBadgeHeaderText, { color: brown }]}>Studio Portal</Text>
+              </View>
+            )}
           </View>
 
-          {/* Right Side Actions: Theme Toggle & Auth Profile Button */}
+          {/* Right Side Actions: Auth Profile / Sign In Button (Moon Icon Removed) */}
           <View style={styles.headerRightRow}>
-            {/* Quick Theme Toggle Icon Button */}
-            <Pressable
-              onPress={toggleThemeMode}
-              style={({ pressed }) => [
-                styles.themeIconButton,
-                { borderColor: theme.border, backgroundColor: theme.backgroundElement },
-                pressed && { opacity: 0.7 }
-              ]}
-              accessibilityLabel="Toggle Light/Dark Theme"
-            >
-              <Ionicons
-                name={resolvedTheme === 'dark' ? 'sunny' : 'moon'}
-                size={16}
-                color={resolvedTheme === 'dark' ? '#F1C40F' : brown}
-              />
-            </Pressable>
-
             {user ? (
               <Pressable
                 onPress={openProfileModal}
@@ -162,38 +125,72 @@ export default function ExploreScreen() {
                 ]}
               >
                 <Ionicons name="person-circle-outline" size={16} color="#FFFFFF" />
-                <Text style={styles.signInText}>Sign In</Text>
+                <Text style={styles.signInText}>Sign In / Login</Text>
               </Pressable>
             )}
           </View>
         </View>
 
-        {/* Search Bar */}
-        <View style={[styles.searchBarContainer, { borderColor: theme.border, backgroundColor: theme.inputBackground }]}>
-          <Ionicons
-            name="search"
-            size={18}
-            color={theme.textSecondary}
-          />
-          <TextInput
-            style={[styles.searchInput, { color: theme.text }]}
-            placeholder={`Search in ${city}...`}
-            placeholderTextColor={theme.textSecondary}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          {searchQuery !== '' && (
-            <Pressable onPress={() => setSearchQuery('')}>
+        {/* DESIGNER ROLE INTERFACE */}
+        {user?.role === 'designer' ? (
+          <DesignerDashboard />
+        ) : (
+          /* CUSTOMER (GENERAL PUBLIC) INTERFACE */
+          <>
+            {/* Dedicated Rectangular Location Bar Section Below Navbar */}
+            <Pressable
+              onPress={() => setCityModalVisible(true)}
+              style={({ pressed }) => [
+                styles.locationRectBar,
+                { backgroundColor: theme.cardBackground, borderColor: theme.border },
+                pressed && { opacity: 0.9 }
+              ]}
+            >
+              <View style={[styles.locationIconBadge, { backgroundColor: theme.accentGreenLight }]}>
+                <Ionicons name="location" size={16} color={green} />
+              </View>
+
+              <View style={styles.locationInfoCol}>
+                <ThemedText style={styles.locationSmallLabel} themeColor="textSecondary">
+                  CURRENT LOCATION
+                </ThemedText>
+                <ThemedText type="smallBold" style={[styles.locationCityText, { color: theme.text }]}>
+                  {city}, Gujarat
+                </ThemedText>
+              </View>
+
+              <View style={[styles.changeCityPill, { backgroundColor: theme.backgroundElement, borderColor: theme.border }]}>
+                <Text style={[styles.changeCityPillText, { color: green }]}>Change</Text>
+                <Ionicons name="chevron-down" size={12} color={green} style={{ marginLeft: 2 }} />
+              </View>
+            </Pressable>
+
+            {/* Search Bar */}
+            <View style={[styles.searchBarContainer, { borderColor: theme.border, backgroundColor: theme.inputBackground }]}>
               <Ionicons
-                name="close-circle"
-                size={16}
+                name="search"
+                size={18}
                 color={theme.textSecondary}
               />
-            </Pressable>
-          )}
-        </View>
+              <TextInput
+                style={[styles.searchInput, { color: theme.text }]}
+                placeholder={`Search interior designers in ${city}...`}
+                placeholderTextColor={theme.textSecondary}
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+              />
+              {searchQuery !== '' && (
+                <Pressable onPress={() => setSearchQuery('')}>
+                  <Ionicons
+                    name="close-circle"
+                    size={16}
+                    color={theme.textSecondary}
+                  />
+                </Pressable>
+              )}
+            </View>
 
-        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+            <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
           {/* Top Choice Section */}
           {searchQuery === '' && selectedArea === 'All Areas' && featuredDesigner && (
             <View style={styles.featuredContainer}>
@@ -313,8 +310,10 @@ export default function ExploreScreen() {
             )}
           </View>
         </ScrollView>
+      </>
+    )}
 
-      </SafeAreaView>
+  </SafeAreaView>
 
       {/* Designer Detail Modal */}
       <DesignerDetailModal
@@ -410,26 +409,61 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     height: 36,
   },
-  locationContainer: {
+  roleBadgeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  roleBadgeHeaderText: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  locationRectBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderRadius: 12,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: Spacing.three,
+  },
+  locationIconBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
     justifyContent: 'center',
   },
-  locationLabel: {
+  locationInfoCol: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  locationSmallLabel: {
     fontSize: 9,
     fontWeight: '800',
     letterSpacing: 0.8,
   },
-  locationRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-    marginTop: 1,
-  },
-  cityText: {
+  locationCityText: {
     fontSize: 14,
     fontWeight: '700',
+    marginTop: 1,
   },
-  pressedHeaderItem: {
-    opacity: 0.7,
+  changeCityPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+  },
+  changeCityPillText: {
+    fontSize: 11,
+    fontWeight: '700',
   },
   headerRightRow: {
     flexDirection: 'row',

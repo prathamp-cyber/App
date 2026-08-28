@@ -48,7 +48,7 @@ export function AuthModal() {
 
     try {
       if (mode === 'login') {
-        const res = await login(email, password);
+        const res = await login(email, password, role);
         if (!res.success) {
           setErrorMessage(res.error || 'Failed to sign in.');
         } else {
@@ -144,53 +144,51 @@ export function AuthModal() {
             </View>
           )}
 
-          {/* Account Role Selector for Sign Up */}
-          {mode === 'signup' && (
-            <View style={styles.roleContainer}>
-              <ThemedText style={styles.inputLabel} themeColor="textSecondary">
-                Account Type
-              </ThemedText>
-              <View style={styles.roleRow}>
-                <Pressable
-                  onPress={() => setRole('client')}
-                  style={[
-                    styles.roleChip,
-                    {
-                      borderColor: role === 'client' ? green : theme.border,
-                      backgroundColor: role === 'client' ? theme.accentGreenLight : 'transparent'
-                    }
-                  ]}
+          {/* Account Role Selector */}
+          <View style={styles.roleContainer}>
+            <ThemedText style={styles.inputLabel} themeColor="textSecondary">
+              Select Account Type to Log In / Sign Up
+            </ThemedText>
+            <View style={styles.roleRow}>
+              <Pressable
+                onPress={() => setRole('client')}
+                style={[
+                  styles.roleChip,
+                  {
+                    borderColor: role === 'client' ? green : theme.border,
+                    backgroundColor: role === 'client' ? theme.accentGreenLight : 'transparent'
+                  }
+                ]}
+              >
+                <Ionicons name="person" size={14} color={role === 'client' ? green : theme.textSecondary} />
+                <ThemedText
+                  type="smallBold"
+                  style={{ fontSize: 12, color: role === 'client' ? green : theme.textSecondary }}
                 >
-                  <Ionicons name="person" size={14} color={role === 'client' ? green : theme.textSecondary} />
-                  <ThemedText
-                    type="smallBold"
-                    style={{ fontSize: 12, color: role === 'client' ? green : theme.textSecondary }}
-                  >
-                    Homeowner
-                  </ThemedText>
-                </Pressable>
+                  Customer (Public)
+                </ThemedText>
+              </Pressable>
 
-                <Pressable
-                  onPress={() => setRole('designer')}
-                  style={[
-                    styles.roleChip,
-                    {
-                      borderColor: role === 'designer' ? brown : theme.border,
-                      backgroundColor: role === 'designer' ? theme.accentBrownLight : 'transparent'
-                    }
-                  ]}
+              <Pressable
+                onPress={() => setRole('designer')}
+                style={[
+                  styles.roleChip,
+                  {
+                    borderColor: role === 'designer' ? brown : theme.border,
+                    backgroundColor: role === 'designer' ? theme.accentBrownLight : 'transparent'
+                  }
+                ]}
+              >
+                <Ionicons name="briefcase" size={14} color={role === 'designer' ? brown : theme.textSecondary} />
+                <ThemedText
+                  type="smallBold"
+                  style={{ fontSize: 12, color: role === 'designer' ? brown : theme.textSecondary }}
                 >
-                  <Ionicons name="briefcase" size={14} color={role === 'designer' ? brown : theme.textSecondary} />
-                  <ThemedText
-                    type="smallBold"
-                    style={{ fontSize: 12, color: role === 'designer' ? brown : theme.textSecondary }}
-                  >
-                    Designer / Firm
-                  </ThemedText>
-                </Pressable>
-              </View>
+                  Interior Designer
+                </ThemedText>
+              </Pressable>
             </View>
-          )}
+          </View>
 
           {/* Form Fields */}
           <View style={styles.formContainer}>

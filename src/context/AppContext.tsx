@@ -25,7 +25,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [comparedIds, setComparedIds] = useState<string[]>([]);
   const [city, setCity] = useState<string>('Gandhidham');
-  const [themeMode, setThemeMode] = useState<ThemeMode>('system');
+  const [themeMode, setThemeMode] = useState<ThemeMode>('light');
   
   const systemScheme = useRNColorScheme();
   const resolvedTheme: 'light' | 'dark' =

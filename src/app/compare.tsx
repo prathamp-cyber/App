@@ -68,22 +68,6 @@ export default function CompareScreen() {
               </Pressable>
             )}
 
-            {/* Theme Toggle Button */}
-            <Pressable
-              onPress={toggleThemeMode}
-              style={({ pressed }) => [
-                styles.themeIconButton,
-                { borderColor: theme.border, backgroundColor: theme.backgroundElement },
-                pressed && { opacity: 0.7 }
-              ]}
-              accessibilityLabel="Toggle Light/Dark Theme"
-            >
-              <Ionicons
-                name={resolvedTheme === 'dark' ? 'sunny' : 'moon'}
-                size={16}
-                color={resolvedTheme === 'dark' ? '#F1C40F' : brown}
-              />
-            </Pressable>
 
             {user ? (
               <Pressable

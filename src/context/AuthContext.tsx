@@ -17,7 +17,7 @@ export interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  login: (email: string, password: string, role?: UserRole) => Promise<{ success: boolean; error?: string }>;
   signup: (params: {
     name: string;
     email: string;
@@ -67,7 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAuthModalVisible, setAuthModalVisible] = useState(false);
   const [isProfileModalVisible, setProfileModalVisible] = useState(false);
 
-  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const login = async (email: string, password: string, role?: UserRole): Promise<{ success: boolean; error?: string }> => {
     if (!email || !password) {
       return { success: false, error: 'Please fill in both email and password.' };
     }
@@ -78,7 +78,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     await new Promise((resolve) => setTimeout(resolve, 500));
 
-    if (email.toLowerCase().includes('designer')) {
+    if (role === 'designer' || email.toLowerCase().includes('designer')) {
       setUser(DEMO_DESIGNER);
     } else {
       setUser({
