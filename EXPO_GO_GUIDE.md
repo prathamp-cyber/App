@@ -27,7 +27,8 @@ graph TD
 
 ## 🚀 Part 2: The Two Ways to Run the App
 
-We have configured two easy commands in `package.json` to handle this.
+### Smart Launcher (Automated IP Detection) 🤖
+We created a smart launcher script in `scripts/start-with-ip.js` that automatically detects your physical Wi-Fi IP address and ignores VMware / VirtualBox virtual adapters whenever you run `npm start` or `npm run tunnel`.
 
 ### Option A: Tunnel Mode (Easiest & Most Reliable) ⭐️
 Tunneling uses **ngrok** to create a public URL that routes traffic directly to your local computer. 
@@ -36,24 +37,15 @@ Tunneling uses **ngrok** to create a public URL that routes traffic directly to 
   ```bash
   npm run tunnel
   ```
-* **How it works:** Metro generates a URL like `exp://u5-xyz.nh.expo.direct`. Your phone connects to this external URL, which redirects to your computer.
 
 ### Option B: LAN Mode (Fastest Performance)
-LAN connects your phone directly to your computer's local IP.
-* **When to use:** Home Wi-Fi where you want maximum reload speed and instant updates.
+LAN connects your phone directly to your computer's physical local IP.
+* **When to use:** Home/Local Wi-Fi where you want maximum reload speed.
 * **How to run:**
   ```bash
   npm start
   ```
-* **If it binds to the wrong IP (e.g., VMware/VirtualBox):**
-  You can force Expo to use your physical Wi-Fi IP address.
-  1. Find your physical Wi-Fi IP using our diagnostic tool:
-     ```bash
-     npm run diagnose
-     ```
-  2. Start Expo forcing that IP address:
-     * **Powershell:** `$env:REACT_NATIVE_PACKAGER_HOSTNAME="YOUR_WIFI_IP"; npm start`
-     * **CMD:** `set REACT_NATIVE_PACKAGER_HOSTNAME=YOUR_WIFI_IP&& npm start`
+* **How it works:** `npm start` will automatically bind to your real physical Wi-Fi IP (e.g., `10.103.153.210`) and filter out VMware virtual adapters automatically.
 
 ---
 
