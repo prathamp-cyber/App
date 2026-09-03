@@ -15,22 +15,35 @@ import { useTheme } from '@/hooks/use-theme';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 
-SplashScreen.preventAutoHideAsync();
+// Prevent Expo native splash screen from hiding automatically until JS resolves
+SplashScreen.preventAutoHideAsync().catch(() => {});
 
 function AppMainLayout() {
   const { resolvedTheme } = useAppContext();
   const theme = useTheme();
   const { user, isLoading, hasSeenOnboarding, isAuthModalVisible, setAuthModalVisible } = useAuth();
 
+  // Hide Expo native splash screen as soon as auth session & onboarding state resolution finishes
+  useEffect(() => {
+    if (!isLoading) {
+      console.log('[Dwellist Layout] Auth loading complete. Hiding native Expo splash screen.');
+      if (Platform.OS !== 'web') {
+        SplashScreen.hideAsync().catch(() => {});
+      }
+    }
+  }, [isLoading]);
+
   // Auto-trigger auth modal if session loading is complete, user has completed onboarding, and is unauthenticated
   useEffect(() => {
     if (!isLoading && hasSeenOnboarding && !user && !isAuthModalVisible) {
+      console.log('[Dwellist Layout] User unauthenticated & onboarding complete -> Triggering AuthModal.');
       setAuthModalVisible(true);
     }
   }, [isLoading, hasSeenOnboarding, user, isAuthModalVisible]);
 
   // 1. Render Loading Screen while restoring auth session & onboarding state on app load
   if (isLoading) {
+    console.log('[Dwellist Layout] Rendering state: Loading Screen (isLoading = true)');
     return (
       <ThemeProvider value={resolvedTheme === 'dark' ? DarkTheme : DefaultTheme}>
         <ThemedView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -45,12 +58,15 @@ function AppMainLayout() {
 
   // 2. Render Onboarding Carousel on first app open for unauthenticated users
   if (!hasSeenOnboarding && !user) {
+    console.log('[Dwellist Layout] Rendering state: Onboarding Carousel (!hasSeenOnboarding && !user)');
     return (
       <ThemeProvider value={resolvedTheme === 'dark' ? DarkTheme : DefaultTheme}>
         <OnboardingCarousel />
       </ThemeProvider>
     );
   }
+
+  console.log('[Dwellist Layout] Rendering state: Main Application Tabs (User:', user ? user.name : 'Guest', ')');
 
   const isDesigner = user?.role === 'designer';
 

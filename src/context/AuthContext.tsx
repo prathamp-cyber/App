@@ -104,7 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .maybeSingle();
 
       if (error) {
-        console.warn('Error fetching user profile row from database:', error.message);
+        console.warn('[Dwellist Auth] Error fetching user profile row:', error.message);
         return null;
       }
 
@@ -114,7 +114,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       return null;
     } catch (err) {
-      console.error('Failed to fetch user profile:', err);
+      console.error('[Dwellist Auth] Failed to fetch user profile:', err);
       return null;
     }
   };
@@ -122,24 +122,44 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Restore onboarding state and session on app load
   useEffect(() => {
     let isMounted = true;
+    console.log('[Dwellist Auth] Starting session and onboarding initialization...');
+
+    // Safety fallback timeout: Force isLoading to false after 3s to prevent splash freeze
+    const safetyTimer = setTimeout(() => {
+      if (isMounted && isLoading) {
+        console.warn('[Dwellist Auth] Safety timeout triggered (>3000ms): Defaulting isLoading to false.');
+        setIsLoading(false);
+      }
+    }, 3000);
 
     const initializeAuthAndOnboarding = async () => {
       try {
         // 1. Read onboarding flag from AsyncStorage
+        console.log('[Dwellist Auth] Reading onboarding flag from AsyncStorage...');
         const seenFlag = await AsyncStorage.getItem(ONBOARDING_STORAGE_KEY);
+        console.log('[Dwellist Auth] Onboarding flag read:', seenFlag);
+
         if (isMounted && seenFlag === 'true') {
           setHasSeenOnboarding(true);
         }
 
         // 2. Fetch stored session from Supabase / AsyncStorage
-        const { data: { session } } = await supabase.auth.getSession();
+        console.log('[Dwellist Auth] Fetching Supabase session via getSession()...');
+        const { data: { session }, error } = await supabase.auth.getSession();
+
+        if (error) {
+          console.warn('[Dwellist Auth] getSession error:', error.message);
+        }
+
+        console.log('[Dwellist Auth] Session result:', session ? `User ID: ${session.user.id}` : 'No active session');
 
         if (session?.user && isMounted) {
           const profile = await fetchUserProfile(session.user.id, session.user.email);
+          console.log('[Dwellist Auth] Profile result:', profile ? `Found: ${profile.name}` : 'No profile row');
+
           if (profile) {
             setUser(profile);
           } else {
-            // Fallback user object using auth metadata if DB row not found yet
             setUser({
               id: session.user.id,
               name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User',
@@ -152,9 +172,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
         }
       } catch (err) {
-        console.error('Session initialization error:', err);
+        console.error('[Dwellist Auth] Unexpected initialization error:', err);
       } finally {
         if (isMounted) {
+          clearTimeout(safetyTimer);
+          console.log('[Dwellist Auth] Initialization complete. Setting isLoading = false');
           setIsLoading(false);
         }
       }
@@ -162,8 +184,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     initializeAuthAndOnboarding();
 
-    // 3. Listen to all relevant Supabase auth state events (INITIAL_SESSION, SIGNED_IN, TOKEN_REFRESHED)
+    // 3. Listen to all relevant Supabase auth state events
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('[Dwellist Auth] Auth state change event:', event);
       if (
         (event === 'SIGNED_IN' || event === 'INITIAL_SESSION' || event === 'TOKEN_REFRESHED') &&
         session?.user &&
@@ -182,15 +205,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     return () => {
       isMounted = false;
+      clearTimeout(safetyTimer);
       subscription.unsubscribe();
     };
   }, []);
 
   const completeOnboarding = async () => {
     try {
+      console.log('[Dwellist Auth] Marking onboarding as completed...');
       await AsyncStorage.setItem(ONBOARDING_STORAGE_KEY, 'true');
     } catch (err) {
-      console.error('Failed to save onboarding state:', err);
+      console.error('[Dwellist Auth] Failed to save onboarding flag:', err);
     } finally {
       setHasSeenOnboarding(true);
       if (!user) {
@@ -337,9 +362,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async () => {
     try {
+      console.log('[Dwellist Auth] Logging out user...');
       await supabase.auth.signOut();
     } catch (err) {
-      console.error('Logout error:', err);
+      console.error('[Dwellist Auth] Logout error:', err);
     } finally {
       setUser(null);
       setProfileModalVisible(false);
@@ -347,6 +373,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const quickDemoLogin = (role: UserRole) => {
+    console.log('[Dwellist Auth] Quick demo login for role:', role);
     setUser(role === 'designer' ? DEMO_DESIGNER : DEMO_CLIENT);
     setAuthModalVisible(false);
   };
