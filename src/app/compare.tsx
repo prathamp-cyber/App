@@ -4,11 +4,15 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 
+import { Redirect } from 'expo-router';
+import { ActivityIndicator } from 'react-native';
+
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing, BottomTabInset, MaxContentWidth } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
-import { MOCK_DESIGNERS, Designer } from '@/constants/mockData';
+import { Designer } from '@/types/designer';
+import { useDesigners } from '@/hooks/use-designers';
 import { useAppContext } from '@/context/AppContext';
 import { useAuth } from '@/context/AuthContext';
 import { DesignerDetailModal } from '@/components/designer-detail-modal';
@@ -17,14 +21,20 @@ export default function CompareScreen() {
   const theme = useTheme();
   const { comparedIds, toggleCompare, clearCompare, toggleThemeMode, resolvedTheme } = useAppContext();
   const { user, openAuthModal, openProfileModal } = useAuth();
+
+  // Role guard: Designers are restricted to their Studio Portal
+  if (user?.role === 'designer') {
+    return <Redirect href="/" />;
+  }
   const [selectedDesigner, setSelectedDesigner] = useState<Designer | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
   const brown = theme.primaryBrown;
   const green = theme.primaryGreen;
 
-  // Retrieve active designers in comparison list
-  const comparedDesigners = MOCK_DESIGNERS.filter((d) => comparedIds.includes(d.id));
+  // Retrieve active designers live from Supabase
+  const { designers: allDesigners, loading } = useDesigners();
+  const comparedDesigners = allDesigners.filter((d) => comparedIds.includes(d.id));
 
   const handleDesignerPress = (designer: Designer) => {
     setSelectedDesigner(designer);
@@ -81,7 +91,7 @@ export default function CompareScreen() {
                 {user.avatar ? (
                   <Image source={{ uri: user.avatar }} style={styles.userAvatar} contentFit="cover" />
                 ) : (
-                  <View style={[styles.userInitialsBg, { backgroundColor: user.role === 'designer' ? brown : green }]}>
+                  <View style={[styles.userInitialsBg, { backgroundColor: green }]}>
                     <Text style={styles.userInitialsText}>{user.name.charAt(0)}</Text>
                   </View>
                 )}

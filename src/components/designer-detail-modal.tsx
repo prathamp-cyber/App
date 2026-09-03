@@ -9,7 +9,8 @@ import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useAppContext } from '@/context/AppContext';
 import { useAuth } from '@/context/AuthContext';
-import { Designer } from '@/constants/mockData';
+import { Designer } from '@/types/designer';
+import { useDesignerDetail } from '@/hooks/use-designer-detail';
 
 interface DesignerDetailModalProps {
   designer: Designer | null;
@@ -18,13 +19,19 @@ interface DesignerDetailModalProps {
 }
 
 export const DesignerDetailModal: React.FC<DesignerDetailModalProps> = ({
-  designer,
+  designer: initialDesigner,
   visible,
   onClose,
 }) => {
   const theme = useTheme();
   const { isSaved, toggleSave, isCompared, toggleCompare } = useAppContext();
   const { user } = useAuth();
+
+  const { designer: liveDesigner, loading: detailLoading } = useDesignerDetail(
+    visible && initialDesigner ? initialDesigner.id : null
+  );
+
+  const designer = liveDesigner || initialDesigner;
 
   const [inquiryVisible, setInquiryVisible] = useState(false);
   const [clientName, setClientName] = useState(user?.name || '');

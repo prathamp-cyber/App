@@ -4,11 +4,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 
+import { ActivityIndicator } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing, BottomTabInset, MaxContentWidth } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
-import { MOCK_DESIGNERS, GANDHIDHAM_AREAS, AHMEDABAD_AREAS, Designer } from '@/constants/mockData';
+import { GANDHIDHAM_AREAS, AHMEDABAD_AREAS } from '@/constants/mockData';
+import { Designer } from '@/types/designer';
+import { useDesigners } from '@/hooks/use-designers';
 import { DesignerCard } from '@/components/designer-card';
 import { DesignerDetailModal } from '@/components/designer-detail-modal';
 import { DesignerDashboard } from '@/components/designer-dashboard';
@@ -38,23 +41,15 @@ export default function ExploreScreen() {
   // Select active areas list
   const activeAreas = city === 'Gandhidham' ? GANDHIDHAM_AREAS : AHMEDABAD_AREAS;
 
-  // Filter designers based on search, selected city, and area
-  const filteredDesigners = MOCK_DESIGNERS.filter((designer) => {
-    const matchesCity = designer.city === city;
-
-    const matchesArea = selectedArea === 'All Areas' || designer.area === selectedArea;
-    const matchesSearch =
-      designer.firm.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      designer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      designer.specialties.some((spec) => spec.toLowerCase().includes(searchQuery.toLowerCase()));
-    
-    return matchesCity && matchesArea && matchesSearch;
+  // Fetch designers live from Supabase with server-side filters
+  const { designers: filteredDesigners, loading } = useDesigners({
+    city,
+    area: selectedArea,
+    search: searchQuery,
   });
 
-  // Featured Designer per city:
-  // Gandhidham featured: Designer's Circle (id: "1")
-  // Ahmedabad featured: The Grid Architects (id: "8")
-  const featuredDesigner = MOCK_DESIGNERS.find(d => d.id === (city === 'Gandhidham' ? '1' : '8')) || filteredDesigners[0];
+  // Featured Designer for active location
+  const featuredDesigner = filteredDesigners[0] || null;
 
   const handleCardPress = (designer: Designer) => {
     setSelectedDesigner(designer);
@@ -289,7 +284,14 @@ export default function ExploreScreen() {
               </ThemedText>
             </View>
 
-            {filteredDesigners.length > 0 ? (
+            {loading ? (
+              <View style={{ paddingVertical: 40, alignItems: 'center' }}>
+                <ActivityIndicator size="large" color={green} />
+                <ThemedText style={{ marginTop: 10, fontSize: 13 }} themeColor="textSecondary">
+                  Loading verified studios in {city}...
+                </ThemedText>
+              </View>
+            ) : filteredDesigners.length > 0 ? (
               filteredDesigners.map((designer) => (
                 <DesignerCard
                   key={designer.id}

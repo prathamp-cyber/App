@@ -8,7 +8,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Colors, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useAppContext } from '@/context/AppContext';
-import { Designer } from '@/constants/mockData';
+import { Designer } from '@/types/designer';
 
 interface DesignerCardProps {
   designer: Designer;
