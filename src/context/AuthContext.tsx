@@ -170,6 +170,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               memberSince: new Date().getFullYear().toString(),
             });
           }
+        } else if (isMounted) {
+          // Check for persisted demo user session
+          const storedDemoUser = await AsyncStorage.getItem('@dwellist_demo_user');
+          if (storedDemoUser && isMounted) {
+            try {
+              const parsedUser = JSON.parse(storedDemoUser);
+              console.log('[Dwellist Auth] Found stored demo session:', parsedUser.name);
+              setUser(parsedUser);
+            } catch (e) {
+              console.warn('[Dwellist Auth] Could not parse stored demo user session:', e);
+            }
+          }
         }
       } catch (err) {
         console.error('[Dwellist Auth] Unexpected initialization error:', err);
@@ -262,6 +274,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           });
         }
 
+        await AsyncStorage.removeItem('@dwellist_demo_user').catch(() => {});
         setAuthModalVisible(false);
         return { success: true };
       }
@@ -363,6 +376,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = async () => {
     try {
       console.log('[Dwellist Auth] Logging out user...');
+      await AsyncStorage.removeItem('@dwellist_demo_user').catch(() => {});
       await supabase.auth.signOut();
     } catch (err) {
       console.error('[Dwellist Auth] Logout error:', err);
@@ -374,7 +388,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const quickDemoLogin = (role: UserRole) => {
     console.log('[Dwellist Auth] Quick demo login for role:', role);
-    setUser(role === 'designer' ? DEMO_DESIGNER : DEMO_CLIENT);
+    const demoUser = role === 'designer' ? DEMO_DESIGNER : DEMO_CLIENT;
+    setUser(demoUser);
+    AsyncStorage.setItem('@dwellist_demo_user', JSON.stringify(demoUser)).catch((err) =>
+      console.warn('Could not persist demo user session:', err)
+    );
     setAuthModalVisible(false);
   };
 

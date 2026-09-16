@@ -63,7 +63,7 @@ export default function CompareScreen() {
             <ThemedText type="subtitle" style={{ color: green, marginTop: 4 }}>
               Compare Studios
             </ThemedText>
-            <ThemedText style={styles.headerSubtitle} themeColor="textSecondary">
+            <ThemedText style={styles.headerSubtitle} numberOfLines={1} themeColor="textSecondary">
               Side-by-side comparison of local designers
             </ThemedText>
           </View>
@@ -364,9 +364,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: Spacing.two,
     marginBottom: Spacing.four,
+    gap: 8,
   },
   headerTitleGroup: {
     alignItems: 'flex-start',
+    flex: 1,
+    flexShrink: 1,
+    minWidth: 0,
+    marginRight: 8,
   },
   logoBadge: {
     flexDirection: 'row',
@@ -379,6 +384,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    flexShrink: 0,
   },
   themeIconButton: {
     width: 36,
@@ -397,6 +403,7 @@ const styles = StyleSheet.create({
     width: 36,
     alignItems: 'center',
     justifyContent: 'center',
+    flexShrink: 0,
   },
   userAvatar: {
     width: 30,
@@ -433,6 +440,7 @@ const styles = StyleSheet.create({
     height: 36,
     paddingHorizontal: 14,
     borderRadius: 18,
+    flexShrink: 0,
   },
   signInText: {
     color: '#FFFFFF',
@@ -442,6 +450,7 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     fontSize: 12,
     marginTop: 2,
+    flexShrink: 1,
   },
   clearAllButton: {
     paddingHorizontal: 10,

@@ -143,10 +143,10 @@ function AppMainLayout() {
 
 export default function TabLayout() {
   return (
-    <AppProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <AppProvider>
         <AppMainLayout />
-      </AuthProvider>
-    </AppProvider>
+      </AppProvider>
+    </AuthProvider>
   );
 }

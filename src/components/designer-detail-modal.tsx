@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, ScrollView, StyleSheet, Text, View, Pressable, TextInput, Alert, Platform } from 'react-native';
+import { Modal, ScrollView, StyleSheet, Text, View, Pressable, TextInput, Alert, Platform, ActivityIndicator } from 'react-native';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -11,6 +11,7 @@ import { useAppContext } from '@/context/AppContext';
 import { useAuth } from '@/context/AuthContext';
 import { Designer } from '@/types/designer';
 import { useDesignerDetail } from '@/hooks/use-designer-detail';
+import { supabase } from '@/lib/supabase';
 
 interface DesignerDetailModalProps {
   designer: Designer | null;
@@ -25,9 +26,9 @@ export const DesignerDetailModal: React.FC<DesignerDetailModalProps> = ({
 }) => {
   const theme = useTheme();
   const { isSaved, toggleSave, isCompared, toggleCompare } = useAppContext();
-  const { user } = useAuth();
+  const { user, openAuthModal } = useAuth();
 
-  const { designer: liveDesigner, loading: detailLoading } = useDesignerDetail(
+  const { designer: liveDesigner, loading: detailLoading, refetch } = useDesignerDetail(
     visible && initialDesigner ? initialDesigner.id : null
   );
 
@@ -39,6 +40,12 @@ export const DesignerDetailModal: React.FC<DesignerDetailModalProps> = ({
   const [projectType, setProjectType] = useState('Residential'); // Residential, Commercial, Renovation
   const [inquirySubmitted, setInquirySubmitted] = useState(false);
 
+  // Review posting state
+  const [newRating, setNewRating] = useState<number>(5);
+  const [newComment, setNewComment] = useState<string>('');
+  const [submittingReview, setSubmittingReview] = useState<boolean>(false);
+  const [reviewSuccess, setReviewSuccess] = useState<boolean>(false);
+
   // Sync client details when user changes or modal opens
   useEffect(() => {
     if (user) {
@@ -47,6 +54,81 @@ export const DesignerDetailModal: React.FC<DesignerDetailModalProps> = ({
     }
   }, [user, visible]);
 
+  const handleReviewSubmit = async () => {
+    if (!designer) return;
+
+    if (!user) {
+      openAuthModal();
+      return;
+    }
+
+    if (!newComment.trim()) {
+      alert('Please enter a review comment before submitting.');
+      return;
+    }
+
+    if (newRating < 1 || newRating > 5) {
+      alert('Please select a rating between 1 and 5 stars.');
+      return;
+    }
+
+    setSubmittingReview(true);
+
+    try {
+      // 4. Validation: One review per user per designer check
+      const { data: existingReview, error: checkError } = await supabase
+        .from('reviews')
+        .select('id')
+        .eq('designer_id', designer.id)
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (existingReview) {
+        alert('You have already submitted a review for this design studio.');
+        setSubmittingReview(false);
+        return;
+      }
+
+      /* DESIGN DECISION / TRIGGER EXPLANATION:
+         We pick the Postgres trigger approach because triggers execute atomically inside 
+         PostgreSQL whenever a review is inserted, updated, or deleted. This guarantees 
+         consistent average rating and review count calculations across all clients (iOS, 
+         Android, Web, API) without extra client-side database roundtrips, race conditions, 
+         or calculation drift between multiple users submitting reviews simultaneously. */
+      const { error: insertError } = await supabase
+        .from('reviews')
+        .insert({
+          designer_id: designer.id,
+          user_id: user.id,
+          user_name: user.name,
+          rating: newRating,
+          comment: newComment.trim(),
+        });
+
+      if (insertError) {
+        console.error('[Dwellist Reviews] Error submitting review:', insertError.message);
+        alert('Could not post review: ' + insertError.message);
+        return;
+      }
+
+      setReviewSuccess(true);
+      setNewComment('');
+      setNewRating(5);
+
+      // 3. Re-fetch live designer aggregate details and review list
+      if (refetch) {
+        await refetch();
+      }
+
+      setTimeout(() => setReviewSuccess(false), 3000);
+    } catch (err: any) {
+      console.error('[Dwellist Reviews] Unexpected error submitting review:', err);
+      alert('An unexpected error occurred while posting your review.');
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
   if (!designer) return null;
 
   const saved = isSaved(designer.id);
@@ -54,19 +136,53 @@ export const DesignerDetailModal: React.FC<DesignerDetailModalProps> = ({
   const brown = theme.primaryBrown;
   const green = theme.primaryGreen;
 
-  const handleInquirySubmit = () => {
+  const handleInquirySubmit = async () => {
+    if (!user) {
+      setInquiryVisible(false);
+      openAuthModal();
+      return;
+    }
+
     if (!clientName.trim() || !clientPhone.trim()) {
       alert("Please fill in your name and phone number.");
       return;
     }
+
     setInquirySubmitted(true);
-    setTimeout(() => {
+
+    try {
+      const { error } = await supabase.from('inquiries').insert({
+        designer_id: designer.id,
+        user_id: user.id,
+        client_name: clientName.trim(),
+        client_phone: clientPhone.trim(),
+        client_email: user.email,
+        property_type: projectType,
+        budget_range: 'Standard',
+        timeline: 'Within 1-3 Months',
+        message: `Consultation request for ${projectType} project.`,
+        status: 'pending',
+      });
+
+      if (error) {
+        console.error('[Dwellist Inquiry] Error inserting inquiry:', error.message);
+        alert('Could not submit inquiry: ' + error.message);
+        setInquirySubmitted(false);
+        return;
+      }
+
+      setTimeout(() => {
+        setInquirySubmitted(false);
+        setInquiryVisible(false);
+        setClientName(user?.name || '');
+        setClientPhone(user?.phone || '');
+        alert(`Inquiry sent to ${designer.firm}! They will contact you shortly.`);
+      }, 1000);
+    } catch (err: any) {
+      console.error('[Dwellist Inquiry] Unexpected error:', err);
+      alert('An unexpected error occurred while submitting your consultation request.');
       setInquirySubmitted(false);
-      setInquiryVisible(false);
-      setClientName('');
-      setClientPhone('');
-      alert(`Inquiry sent to ${designer.firm}! They will contact you shortly.`);
-    }, 1500);
+    }
   };
 
   return (
@@ -231,9 +347,66 @@ export const DesignerDetailModal: React.FC<DesignerDetailModalProps> = ({
           <View style={styles.sectionContainer}>
             <View style={styles.reviewsTitleRow}>
               <ThemedText type="smallBold" style={[styles.sectionTitle, { color: brown }]}>
-                Google Reviews ({designer.googleReviewCount})
+                Verified Reviews ({designer.reviews?.length || designer.googleReviewCount || 0})
               </ThemedText>
               <ThemedText style={styles.reviewsLogo}>Verified</ThemedText>
+            </View>
+
+            {/* Write a Review Form Card */}
+            <View style={[styles.writeReviewCard, { borderColor: theme.border, backgroundColor: theme.cardBackground }]}>
+              <ThemedText type="smallBold" style={[styles.writeReviewHeader, { color: green }]}>
+                Write a Review
+              </ThemedText>
+
+              {/* Interactive Star Rating Picker */}
+              <View style={styles.ratingPickerRow}>
+                <ThemedText style={styles.inputLabel}>Your Rating:</ThemedText>
+                <View style={styles.starsRow}>
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <Pressable key={star} onPress={() => setNewRating(star)} style={{ padding: 2 }}>
+                      <Ionicons
+                        name={star <= newRating ? "star" : "star-outline"}
+                        size={22}
+                        color={star <= newRating ? "#D4AF37" : theme.textSecondary}
+                      />
+                    </Pressable>
+                  ))}
+                </View>
+              </View>
+
+              {/* Review Comment Input */}
+              <TextInput
+                style={[styles.reviewInput, { borderColor: theme.border, color: theme.text, backgroundColor: theme.inputBackground }]}
+                placeholder="Share your experience working with this design studio..."
+                placeholderTextColor={theme.textSecondary}
+                multiline
+                numberOfLines={3}
+                value={newComment}
+                onChangeText={setNewComment}
+              />
+
+              {/* Post Review Button */}
+              <Pressable
+                onPress={handleReviewSubmit}
+                disabled={submittingReview}
+                style={({ pressed }) => [
+                  styles.postReviewButton,
+                  { backgroundColor: green },
+                  pressed && { opacity: 0.9 }
+                ]}
+              >
+                {submittingReview ? (
+                  <ActivityIndicator size="small" color="#FFFFFF" />
+                ) : (
+                  <Text style={styles.postReviewButtonText}>Submit Review</Text>
+                )}
+              </Pressable>
+
+              {reviewSuccess && (
+                <ThemedText style={styles.successMessage}>
+                  ✓ Your review has been published!
+                </ThemedText>
+              )}
             </View>
 
             {designer.reviews.map((rev) => (
@@ -688,5 +861,52 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '700',
     fontSize: 13,
+  },
+  writeReviewCard: {
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: Spacing.three,
+    gap: 8,
+  },
+  writeReviewHeader: {
+    fontSize: 13,
+    fontWeight: '700',
+  },
+  ratingPickerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  starsRow: {
+    flexDirection: 'row',
+    gap: 4,
+  },
+  reviewInput: {
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    fontSize: 13,
+    minHeight: 64,
+    textAlignVertical: 'top',
+  },
+  postReviewButton: {
+    borderRadius: 8,
+    paddingVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  postReviewButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 13,
+  },
+  successMessage: {
+    color: '#27AE60',
+    fontSize: 12,
+    fontWeight: '700',
+    marginTop: 4,
+    textAlign: 'center',
   },
 });

@@ -1,12 +1,17 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useColorScheme as useRNColorScheme } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { supabase } from '../lib/supabase';
+import { useAuth } from './AuthContext';
 
 export type ThemeMode = 'light' | 'dark' | 'system';
+
+const THEME_STORAGE_KEY = '@dwellist_theme_mode';
 
 interface AppContextType {
   savedIds: string[];
   comparedIds: string[];
-  toggleSave: (id: string) => void;
+  toggleSave: (id: string) => Promise<void> | void;
   toggleCompare: (id: string) => void;
   clearCompare: () => void;
   isSaved: (id: string) => boolean;
@@ -22,25 +27,121 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user, openAuthModal } = useAuth();
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [comparedIds, setComparedIds] = useState<string[]>([]);
   const [city, setCity] = useState<string>('Gandhidham');
-  const [themeMode, setThemeMode] = useState<ThemeMode>('light');
+  const [themeMode, setThemeModeState] = useState<ThemeMode>('light');
   
   const systemScheme = useRNColorScheme();
+
+  // Restore saved theme mode from AsyncStorage on app launch
+  useEffect(() => {
+    AsyncStorage.getItem(THEME_STORAGE_KEY)
+      .then((stored) => {
+        if (stored === 'light' || stored === 'dark' || stored === 'system') {
+          setThemeModeState(stored as ThemeMode);
+        }
+      })
+      .catch((err) => console.warn('Could not read theme mode from storage:', err));
+  }, []);
+
+  // Sync saved designers from Supabase database `saved_designers` table whenever user changes
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchSavedDesignersFromDb = async () => {
+      if (!user?.id) {
+        if (isMounted) setSavedIds([]);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('saved_designers')
+          .select('designer_id')
+          .eq('user_id', user.id);
+
+        if (error) {
+          console.warn('[Dwellist Saved] Error fetching saved designers:', error.message);
+          return;
+        }
+
+        if (data && isMounted) {
+          const ids = data.map((row: any) => row.designer_id);
+          setSavedIds(ids);
+        }
+      } catch (err) {
+        console.error('[Dwellist Saved] Failed to load saved designers:', err);
+      }
+    };
+
+    fetchSavedDesignersFromDb();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user?.id]);
+
+  const setThemeMode = (mode: ThemeMode) => {
+    setThemeModeState(mode);
+    AsyncStorage.setItem(THEME_STORAGE_KEY, mode).catch((err) =>
+      console.warn('Could not persist theme mode to storage:', err)
+    );
+  };
+
   const resolvedTheme: 'light' | 'dark' =
     themeMode === 'system'
       ? (systemScheme === 'dark' ? 'dark' : 'light')
       : themeMode;
 
   const toggleThemeMode = () => {
-    setThemeMode((prev) => (resolvedTheme === 'dark' ? 'light' : 'dark'));
+    const nextMode = resolvedTheme === 'dark' ? 'light' : 'dark';
+    setThemeMode(nextMode);
   };
 
-  const toggleSave = (id: string) => {
+  const toggleSave = async (id: string) => {
+    // 5. Handle logged-out case: prompt login via openAuthModal()
+    if (!user) {
+      openAuthModal();
+      return;
+    }
+
+    const currentlySaved = savedIds.includes(id);
+
+    // Optimistic UI state update
     setSavedIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+      currentlySaved ? prev.filter((item) => item !== id) : [...prev, id]
     );
+
+    if (currentlySaved) {
+      // 3. Un-saving -> delete matching row from saved_designers table
+      const { error } = await supabase
+        .from('saved_designers')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('designer_id', id);
+
+      if (error) {
+        console.error('[Dwellist Saved] Error removing saved designer:', error.message);
+        // Revert optimistic update on failure
+        setSavedIds((prev) => [...prev, id]);
+      }
+    } else {
+      // 2. Saving -> insert/upsert into saved_designers table
+      const { error } = await supabase
+        .from('saved_designers')
+        .upsert(
+          { user_id: user.id, designer_id: id },
+          { onConflict: 'user_id, designer_id' }
+        );
+
+      if (error) {
+        console.error('[Dwellist Saved] Error saving designer:', error.message);
+        // Revert optimistic update on failure
+        setSavedIds((prev) => prev.filter((item) => item !== id));
+      }
+    }
   };
 
   const toggleCompare = (id: string) => {
@@ -95,4 +196,3 @@ export const useAppContext = () => {
   }
   return context;
 };
-

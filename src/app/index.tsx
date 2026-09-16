@@ -132,7 +132,7 @@ export default function ExploreScreen() {
         ) : (
           /* CUSTOMER (GENERAL PUBLIC) INTERFACE */
           <>
-            {/* Dedicated Rectangular Location Bar Section Below Navbar */}
+            {/* Permanent Location Bar Section Below Header */}
             <Pressable
               onPress={() => setCityModalVisible(true)}
               style={({ pressed }) => [
@@ -160,32 +160,32 @@ export default function ExploreScreen() {
               </View>
             </Pressable>
 
-            {/* Search Bar */}
-            <View style={[styles.searchBarContainer, { borderColor: theme.border, backgroundColor: theme.inputBackground }]}>
-              <Ionicons
-                name="search"
-                size={18}
-                color={theme.textSecondary}
-              />
-              <TextInput
-                style={[styles.searchInput, { color: theme.text }]}
-                placeholder={`Search interior designers in ${city}...`}
-                placeholderTextColor={theme.textSecondary}
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-              />
-              {searchQuery !== '' && (
-                <Pressable onPress={() => setSearchQuery('')}>
-                  <Ionicons
-                    name="close-circle"
-                    size={16}
-                    color={theme.textSecondary}
-                  />
-                </Pressable>
-              )}
-            </View>
-
+            {/* Scrollable Content (Search Bar + Listings) */}
             <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+              {/* Search Bar (Scrolls away with page content) */}
+              <View style={[styles.searchBarContainer, { borderColor: theme.border, backgroundColor: theme.inputBackground }]}>
+                <Ionicons
+                  name="search"
+                  size={18}
+                  color={theme.textSecondary}
+                />
+                <TextInput
+                  style={[styles.searchInput, { color: theme.text }]}
+                  placeholder={`Search designers in ${city}...`}
+                  placeholderTextColor={theme.textSecondary}
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                />
+                {searchQuery !== '' && (
+                  <Pressable onPress={() => setSearchQuery('')}>
+                    <Ionicons
+                      name="close-circle"
+                      size={16}
+                      color={theme.textSecondary}
+                    />
+                  </Pressable>
+                )}
+              </View>
           {/* Top Choice Section */}
           {searchQuery === '' && selectedArea === 'All Areas' && featuredDesigner && (
             <View style={styles.featuredContainer}>
@@ -431,13 +431,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     paddingHorizontal: 12,
-    paddingVertical: 10,
-    marginBottom: Spacing.three,
+    height: 46,
+    marginBottom: Spacing.two,
   },
   locationIconBadge: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -448,19 +448,19 @@ const styles = StyleSheet.create({
   locationSmallLabel: {
     fontSize: 9,
     fontWeight: '800',
-    letterSpacing: 0.8,
+    letterSpacing: 0.6,
   },
   locationCityText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '700',
     marginTop: 1,
   },
   changeCityPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
     borderWidth: 1,
   },
   changeCityPillText: {
@@ -537,14 +537,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 12,
     paddingHorizontal: 12,
-    paddingVertical: Platform.OS === 'ios' ? 10 : 6,
+    height: 46,
     gap: 8,
     marginBottom: Spacing.three,
   },
   searchInput: {
     flex: 1,
-    fontSize: 14,
-    padding: 0,
+    fontSize: 13.5,
+    paddingVertical: 0,
+    height: '100%',
   },
   featuredContainer: {
     marginBottom: Spacing.four,
